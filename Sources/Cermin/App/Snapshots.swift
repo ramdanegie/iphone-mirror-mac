@@ -25,6 +25,7 @@ enum Snapshots {
             ("D2-camera-denied", window, { m.debugState(problem: .cameraDenied) }, { AnyView(mirror()) }),
             ("D3-connecting", window, { m.debugState(usb: .connecting(deviceName: "iPhone Egie")) }, { AnyView(mirror()) }),
             ("D4-hover", window, { m.debugState(usb: .mirroring(deviceName: "iPhone Egie"), hovering: true) }, { AnyView(mirror()) }),
+            ("D4-toolbar", CGSize(width: 56, height: 400), { m.debugState(usb: .mirroring(deviceName: "iPhone Egie")) }, { AnyView(MirrorToolbar(model: m).padding(8)) }),
             ("D5-curtain", window, { m.debugState(usb: .mirroring(deviceName: "iPhone Egie"), curtain: true) }, { AnyView(mirror()) }),
             ("D6-disconnected", window, { m.debugState(usb: .disconnected(deviceName: "iPhone Egie")) }, { AnyView(mirror()) }),
             ("D9-toast", window, { m.debugState(usb: .mirroring(deviceName: "iPhone Egie"), toast: "Screenshot tersimpan") }, { AnyView(mirror()) }),
