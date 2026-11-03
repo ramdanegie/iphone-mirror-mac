@@ -24,11 +24,14 @@ Karena app ditandatangani ad-hoc, macOS akan meminta izin Kamera lagi setiap kal
 ./scripts/install-uxplay.sh
 ```
 
-Script ini memasang `cmake pkgconf libplist openssl@3 gstreamer` lewat Homebrew, lalu mem-build [UxPlay](https://github.com/FDH2/UxPlay) v1.73.7 ke `~/Library/Application Support/Cermin/bin/uxplay`. Setelah itu buka **Pengaturan → Wireless → Aktifkan wireless**.
+Script ini memasang `cmake pkgconf libplist openssl@3 gstreamer` lewat Homebrew, lalu mem-build [UxPlay](https://github.com/FDH2/UxPlay) 1.74 (commit `534e2cc`, dikunci) ke `~/Library/Application Support/Cermin/bin/uxplay`. Setelah itu buka **Pengaturan → Wireless → Aktifkan wireless**.
+
+> **Jangan pakai UxPlay v1.73.7** (rilis resmi terakhir / versi Homebrew). Pairing kodenya menolak iOS 27 (`client_proof_len 20 invalid`), sehingga iPhone meminta kode terus-menerus. Kalau sudah terlanjur pasang versi lama, jalankan ulang script ini.
 
 - Matikan **AirPlay Receiver bawaan** (Pengaturan Sistem → Umum → AirDrop & Handoff). Kalau tidak, iPhone melihat dua tujuan, dan yang bawaan selalu fullscreen.
 - Cermin memakai port 7300–7302 dan 5600 (lokal). Kalau firewall aktif, izinkan koneksi masuk untuk `uxplay`.
-- Mode P2P (tanpa Wi-Fi yang sama) masih eksperimental dan butuh build pengembangan: `UXPLAY_VERSION=master ./scripts/install-uxplay.sh`.
+- Kode cukup dimasukkan sekali per iPhone. Cermin menyimpan identitas AirPlay-nya (`uxplay.pem` dan ID perangkat) supaya iPhone tetap mengenali Mac setelah restart.
+- Mode P2P (tanpa Wi-Fi yang sama) masih eksperimental.
 - UxPlay berlisensi **GPL-3.0**. Aman untuk dipakai sendiri; kalau Cermin + UxPlay dibagikan, source code wajib dibuka.
 
 ## Shortcut

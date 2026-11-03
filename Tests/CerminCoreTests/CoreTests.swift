@@ -176,6 +176,21 @@ import Testing
         #expect(c.arguments.suffix(3) == ["-p2p", "-block", "AA:BB"])
     }
 
+    @Test func stableIdentityArguments() {
+        var c = UxPlayConfig()
+        c.deviceID = "02:43:52:4d:44:01"
+        c.keyPath = "/tmp/k.pem"
+        let a = c.arguments
+        #expect(a.firstIndex(of: "-m").map { a[$0 + 1] } == "02:43:52:4d:44:01")
+        #expect(a.firstIndex(of: "-key").map { a[$0 + 1] } == "/tmp/k.pem")
+        #expect(!UxPlayConfig().arguments.contains("-m")) // empty = let UxPlay decide
+        for _ in 0..<100 {
+            let id = UxPlayConfig.randomDeviceID()
+            let first = UInt8(id.prefix(2), radix: 16)!
+            #expect(id.count == 17 && first & 0x02 == 0x02 && first & 0x01 == 0) // locally administered, unicast
+        }
+    }
+
     @Test func randomPINIsFourDigits() {
         for _ in 0..<200 {
             let p = UxPlayConfig.randomPIN()
@@ -189,6 +204,8 @@ import Testing
             == .clientRequest(name: "iPhone Egie", model: "iPhone16,2", deviceID: "AA:BB:CC:DD:EE:FF"))
         #expect(UxPlayLogParser.parse("Client authentication success") == .authenticated(true))
         #expect(UxPlayLogParser.parse("Client authentication failure") == .authenticated(false))
+        #expect(UxPlayLogParser.parse("*** ERROR: Client Authentication Failure (client proof not validated)") == .authenticated(false))
+        #expect(UxPlayLogParser.parse("*** ERROR: pair-pin-setup (step 3): client authentication failed") == .authenticated(false))
         #expect(UxPlayLogParser.parse("Open connections: 0") == .sessionEnded)
         #expect(UxPlayLogParser.parse("Open connections: 1") == nil)
         #expect(UxPlayLogParser.parse("*** ERROR lost connection with client (network problem?)") == .sessionEnded)

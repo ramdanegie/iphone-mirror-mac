@@ -6,6 +6,9 @@ import SwiftUI
 @MainActor
 final class MirrorWindowController: NSObject, NSWindowDelegate {
     let window: NSWindow
+    /// D4 toolbar: a child panel beside the window, never on top of the iPhone screen. As a separate window it also
+    /// stays out of a meeting's "share window" capture.
+    private let toolbar: NSPanel
     private unowned let model: AppModel
     private let container = NSView()
     private var pixelSize = WindowSizing.defaultPixelSize
@@ -18,6 +21,16 @@ final class MirrorWindowController: NSObject, NSWindowDelegate {
         window = NSWindow(contentRect: NSRect(origin: .zero, size: size),
                           styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
                           backing: .buffered, defer: false)
+        let host = FirstClickHostingView(rootView: MirrorToolbar(model: model).padding(8)) // padding: room for the shadow
+        toolbar = NSPanel(contentRect: NSRect(origin: .zero, size: host.fittingSize), styleMask: [.borderless],
+                          backing: .buffered, defer: false)
+        toolbar.contentView = host
+        toolbar.isOpaque = false
+        toolbar.backgroundColor = .clear
+        toolbar.hasShadow = false
+        toolbar.hidesOnDeactivate = false // NSPanel default would hide it while you click around in Zoom
+        toolbar.isMovable = false
+        toolbar.isReleasedWhenClosed = false
         super.init()
 
         window.delegate = self
@@ -51,7 +64,7 @@ final class MirrorWindowController: NSObject, NSWindowDelegate {
         // Default spot: right side of the screen, next to whatever is being presented.
         let restored = UserDefaults.standard.string(forKey: "frame.\(deviceKey)").map(NSRectFromString)
             .flatMap(Self.onScreen)
-        window.setFrame(restored ?? NSRect(x: visible.maxX - size.width - 48, y: visible.midY - size.height / 2,
+        window.setFrame(restored ?? NSRect(x: visible.maxX - size.width - 80, y: visible.midY - size.height / 2,
                                            width: size.width, height: size.height), display: false)
     }
 
@@ -59,12 +72,19 @@ final class MirrorWindowController: NSObject, NSWindowDelegate {
 
     func show() {
         window.makeKeyAndOrderFront(nil)
+        attachToolbar()
         NSApp.activate()
     }
 
-    func hide() { window.orderOut(nil) }
+    func hide() {
+        detachToolbar()
+        window.orderOut(nil)
+    }
 
-    func setPinned(_ pinned: Bool) { window.level = pinned ? .floating : .normal }
+    func setPinned(_ pinned: Bool) {
+        window.level = pinned ? .floating : .normal
+        toolbar.level = window.level
+    }
 
     func setTrafficLights(visible: Bool) {
         for kind in [NSWindow.ButtonType.closeButton, .miniaturizeButton, .zoomButton] {
@@ -115,9 +135,20 @@ final class MirrorWindowController: NSObject, NSWindowDelegate {
         return false // closing only hides; the app stays in the menu bar
     }
 
-    func windowDidResize(_ notification: Notification) { applyCorners() }
+    func windowDidResize(_ notification: Notification) {
+        applyCorners()
+        placeToolbar()
+    }
+
     func windowDidEndLiveResize(_ notification: Notification) { saveFrame() }
-    func windowDidMove(_ notification: Notification) { saveFrame() }
+
+    func windowDidMove(_ notification: Notification) {
+        saveFrame()
+        placeToolbar() // may flip sides after a drag towards the screen edge
+    }
+
+    func windowWillMiniaturize(_ notification: Notification) { detachToolbar() }
+    func windowDidDeminiaturize(_ notification: Notification) { attachToolbar() }
 
     /// Green button = "Fit" (largest size that fits), centered on the current position.
     func windowWillUseStandardFrame(_ window: NSWindow, defaultFrame newFrame: NSRect) -> NSRect {
@@ -126,6 +157,27 @@ final class MirrorWindowController: NSObject, NSWindowDelegate {
     }
 
     // MARK: Private
+
+    private func attachToolbar() {
+        toolbar.level = window.level
+        window.addChildWindow(toolbar, ordered: .above) // moves with the window while it is dragged
+        placeToolbar()
+    }
+
+    private func detachToolbar() {
+        window.removeChildWindow(toolbar)
+        toolbar.orderOut(nil)
+    }
+
+    /// Right of the window; left when the screen edge is too close. Vertically centered, kept on screen.
+    private func placeToolbar() {
+        let frame = window.frame, size = toolbar.frame.size
+        let visible = (window.screen ?? NSScreen.main)?.visibleFrame ?? frame
+        var x = frame.maxX
+        if x + size.width > visible.maxX { x = max(frame.minX - size.width, visible.minX) }
+        let y = min(max(frame.midY - size.height / 2, visible.minY), visible.maxY - size.height)
+        toolbar.setFrameOrigin(NSPoint(x: x, y: y))
+    }
 
     /// Saved frames from a monitor that is no longer attached are ignored.
     private static func onScreen(_ frame: NSRect) -> NSRect? {
@@ -166,6 +218,11 @@ final class VideoView: NSView {
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
     override var mouseDownCanMoveWindow: Bool { true }
+}
+
+/// Toolbar clicks work on the first click, even while another app is active.
+private final class FirstClickHostingView<Content: View>: NSHostingView<Content> {
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 }
 
 /// SwiftUI background that lets the user drag the chromeless window from anywhere.

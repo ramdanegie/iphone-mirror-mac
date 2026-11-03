@@ -38,9 +38,10 @@
 - **FR-25 (Izinkan/Tolak)** di Opsi A: UxPlay tetap menerima koneksi, tapi Cermin **menahan semua frame** sampai user menekan Izinkan. Tolak = restart UxPlay dengan `-block <deviceID>`.
 - **Port wireless 7300–7302** (bukan 7000), jadi tidak bentrok dengan AirPlay Receiver bawaan. Peringatan "matikan receiver bawaan" tetap ada karena iPhone akan melihat dua tujuan.
 - **Nama Wi-Fi (SSID)** di D10/D14 hanya tampil bila macOS mengizinkan (butuh izin Lokasi); bila tidak, tampil IP saja.
-- **P2P (FR-28)** butuh UxPlay versi pengembangan (`-p2p` belum ada di v1.73.7).
+- **UxPlay dikunci ke commit `534e2cc` (1.74)**, bukan rilis v1.73.7: pairing kode v1.73.7 menolak proof SRP 20-byte dari iOS 27 sehingga kode diminta terus. Versi ini juga sudah punya `-p2p` (FR-28). Cermin memberi UxPlay `-key` dan `-m` permanen supaya pairing diingat setelah restart.
 - **Privasi wireless fail-closed:** frame AirPlay ditahan secara default dan baru tampil setelah Izinkan atau untuk perangkat "selalu izinkan". Password tetap < 6 karakter otomatis jatuh ke kode PIN, tidak pernah ke "tanpa kode".
 - **UxPlay dijalankan di pseudo-terminal**, karena log-nya (`printf` tanpa flush) akan tertahan di buffer kalau dialirkan lewat pipe.
+- **Toolbar D4 di luar layar iPhone** (permintaan user): panel vertikal di kanan jendela, pindah ke kiri bila mepet tepi layar, selalu tampil selama jendela tampil (bukan hover di atas video). Karena berupa jendela terpisah, toolbar tidak ikut ter-share saat "share window" di meeting. Pilihan sumber D11 jadi dua ikon (USB / Wi-Fi) di toolbar.
 
 ---
 

@@ -1,7 +1,7 @@
 import CerminCore
 import SwiftUI
 
-/// Everything drawn on top of the video layer inside the mirror window (D2–D6, D9–D13).
+/// Everything drawn on top of the video layer inside the mirror window (D2–D6, D9–D13). The toolbar lives outside, see `MirrorToolbar`.
 struct MirrorOverlay: View {
     let model: AppModel
 
@@ -9,15 +9,6 @@ struct MirrorOverlay: View {
         ZStack {
             WindowDragArea()
             content
-            if model.hovering, model.phase.isMirroring || model.curtain {
-                VStack(spacing: 6) {
-                    MirrorToolbar(model: model)
-                    if model.wirelessEnabled { SourcePicker(model: model).glassCapsule() }
-                }
-                .padding(.top, 40)
-                .frame(maxHeight: .infinity, alignment: .top)
-                .transition(.opacity)
-            }
             VStack(spacing: 8) {
                 if let toast = model.toast { StatusCapsule(text: toast, dot: false).transition(.opacity) }
                 if model.statusPillVisible {
@@ -58,26 +49,26 @@ struct MirrorOverlay: View {
 
 // MARK: - D4 toolbar
 
+/// Vertical toolbar in its own panel beside the mirror window, so it never covers the iPhone screen.
 struct MirrorToolbar: View {
     let model: AppModel
 
     var body: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 2) {
-                pin; shot; curtain; audio
-                divider
-                sizeMenu
-                divider
-                settings
-            }
-            HStack(spacing: 2) { pin; curtain; settings }
+        VStack(spacing: 2) {
+            pin; shot; curtain; audio
+            divider
+            sizeMenu
+            divider
+            ForEach(SourceKind.allCases, id: \.self) { source($0) }
+            divider
+            settings
         }
-        .padding(.horizontal, 5)
-        .frame(height: 38)
+        .padding(.vertical, 5)
+        .frame(width: 40)
         .glassCapsule()
     }
 
-    private var divider: some View { Divider().frame(height: 16).padding(.horizontal, 3) }
+    private var divider: some View { Divider().frame(width: 18).padding(.vertical, 3) }
 
     private var pin: some View {
         ToolbarIcon(symbol: model.pinned ? "pin.fill" : "pin", active: model.pinned,
@@ -107,12 +98,22 @@ struct MirrorToolbar: View {
                 Button(preset.label) { model.apply(preset) }
             }
         } label: {
-            Text(model.preset.label).font(.system(size: 12, weight: .medium))
+            Text(model.preset.label).font(.system(size: 11, weight: .medium))
         }
         .menuStyle(.borderlessButton)
+        .menuIndicator(.hidden)
         .fixedSize()
-        .padding(.horizontal, 6)
+        .frame(height: 30)
         .help("Ukuran jendela (⌘1–⌘4)")
+    }
+
+    /// D11 as two icons: the toolbar is too narrow for the segmented picker.
+    private func source(_ kind: SourceKind) -> some View {
+        ToolbarIcon(symbol: kind == .usb ? "cable.connector" : "wifi", active: model.source == kind,
+                    help: "Sumber: \(kind.label)") {
+            if kind == .wireless, !model.wirelessEnabled { model.wirelessEnabled = true }
+            model.setSource(kind)
+        }
     }
 
     private var settings: some View {

@@ -13,6 +13,10 @@ public struct UxPlayConfig: Equatable, Sendable {
     public var pin = "0000"
     public var password = ""
     public var registerPath = ""
+    /// Stable receiver identity. Without both, UxPlay invents a new key (and on macOS 27 reports MAC 02:00:00:00:00:00)
+    /// on every launch, so iOS can never recognise it again and asks for the code on every connection.
+    public var deviceID = ""
+    public var keyPath = ""
     public var audio = true
     public var peerToPeer = false
     /// Devices the user rejected with "Tolak" (D13); UxPlay refuses them until restarted without the flag.
@@ -24,6 +28,8 @@ public struct UxPlayConfig: Equatable, Sendable {
     public var arguments: [String] {
         var a = ["-n", name, "-nh", "-p", String(basePort), "-fps", "60", "-d", "1",
                  "-vrtp", "config-interval=1 ! udpsink host=127.0.0.1 port=\(rtpPort)"]
+        if !deviceID.isEmpty { a += ["-m", deviceID] }
+        if !keyPath.isEmpty { a += ["-key", keyPath] }
         switch codeMode {
         case .fixedPassword where password.count >= 6:
             a += ["-pw", password]
@@ -41,6 +47,13 @@ public struct UxPlayConfig: Equatable, Sendable {
 
     /// 4 digits, never starting with 0 (UxPlay parses `-pin` as a number).
     public static func randomPIN() -> String { String(Int.random(in: 1000...9999)) }
+
+    /// Random, locally administered unicast MAC ("x2:…") used as the AirPlay device ID; generate once and keep it.
+    public static func randomDeviceID() -> String {
+        var bytes = (0..<6).map { _ in UInt8.random(in: 0...255) }
+        bytes[0] = bytes[0] & ~0x01 | 0x02
+        return bytes.map { String(format: "%02x", $0) }.joined(separator: ":")
+    }
 }
 
 /// What Cermin cares about in UxPlay's log output.
@@ -65,8 +78,10 @@ public enum UxPlayLogParser {
             let id = String(rest[close.upperBound...]).trimmingCharacters(in: .whitespacesAndNewlines)
             return .clientRequest(name: name, model: model, deviceID: id)
         }
-        if line.contains("Client authentication success") { return .authenticated(true) }
-        if line.contains("Client authentication failure") { return .authenticated(false) }
+        let lower = line.lowercased()
+        if lower.contains("client authentication success") || lower.contains("pair-pin-setup success") { return .authenticated(true) }
+        // v1.73: "Client Authentication Failure (client proof not validated)" = wrong PIN; also step-3 failures.
+        if lower.contains("client authentication failure") || lower.contains("client authentication failed") { return .authenticated(false) }
         if line.contains("Open connections: 0") || line.contains("lost connection with client") {
             return .sessionEnded
         }
