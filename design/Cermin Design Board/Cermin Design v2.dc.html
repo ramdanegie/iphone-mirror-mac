@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>
+body{margin:0;background:#ecebe7;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,sans-serif;-webkit-font-smoothing:antialiased;color:#1d1d1f}
+a{color:oklch(0.55 0.1 195);text-decoration:none}
+a:hover{text-decoration:underline}
+*{box-sizing:border-box}
+</style>
+</helmet>
+
+<section id="intro" data-screen-label="00 Intro" style="{{ heroVars }}">
+  <div style="position:relative;overflow:hidden;background:var(--wallpaper);padding:96px 64px 72px;min-height:520px;display:flex;align-items:flex-end;gap:80px;flex-wrap:wrap;color:var(--text)">
+    <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.35;mix-blend-mode:overlay;pointer-events:none"></div>
+    <div style="position:absolute;left:0;right:0;top:62%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent)"></div>
+    <div style="position:relative;display:flex;flex-direction:column;gap:18px;max-width:720px">
+      <div style="font:600 11px ui-monospace,Menlo,monospace;letter-spacing:.14em;color:var(--text2)">CERMIN · DESIGN v2 · KACA &amp; PANTULAN</div>
+      <h1 style="margin:0;font-family:ui-serif,'New York',Georgia,serif;font-size:104px;line-height:.92;font-weight:500;letter-spacing:-.035em">Cermin</h1>
+      <p style="margin:0;font-family:ui-serif,'New York',Georgia,serif;font-size:26px;line-height:1.3;font-style:italic;color:var(--text2);max-width:560px;text-wrap:pretty">Layar iPhone, dipantulkan dengan tenang ke Mac — tanpa watermark, tanpa mengunci apa pun.</p>
+    </div>
+    <div style="position:relative;display:flex;flex-direction:column;gap:8px;max-width:460px;font-size:13px;line-height:1.55;color:var(--text2)">
+      <div style="font-weight:600;color:var(--text)">Arah seni v2</div>
+      <div>• Motif <b style="color:var(--text)">pantulan</b>: garis cakrawala seperti permukaan air. Bentuk di atasnya terpantul samar di bawah. Dipakai di wallpaper, ilustrasi empty state, dan onboarding.</div>
+      <div>• <b style="color:var(--text)">Kaca</b>: toolbar, pill, dan toast berbentuk kapsul kaca dengan highlight di tepi atas (selaras gaya macOS terbaru).</div>
+      <div>• Judul memakai serif bawaan Apple (<i>New York</i>, <code>.fontDesign(.serif)</code>); UI tetap SF Pro.</div>
+      <div>• Seni hanya ada di area setup. Saat mirroring, konten tetap raja, dan curtain tetap netral.</div>
+    </div>
+  </div>
+</section>
+
+<section id="proto" data-screen-label="01 Prototipe" style="padding:64px;display:flex;flex-direction:column;gap:16px">
+  <div style="display:flex;align-items:baseline;gap:14px">
+    <span style="font:600 11px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.45)">01</span>
+    <h2 style="margin:0;font-family:ui-serif,'New York',Georgia,serif;font-size:34px;font-weight:500;letter-spacing:-.02em">Prototipe — <i>double share</i></h2>
+  </div>
+  <div style="font-size:13px;color:rgba(0,0,0,.55);display:flex;gap:18px;flex-wrap:wrap">
+    <span>Hover jendela iPhone → toolbar kaca</span><span>⌃⌥⌘P → Privacy Curtain</span><span>⌘S → screenshot</span><span>Matikan Pin, lalu klik dashboard</span>
+  </div>
+  <div style="{{ protoVars }}">
+    <div style="width:1280px;height:800px;border-radius:14px;overflow:hidden;position:relative;background:var(--wallpaper);box-shadow:0 0 0 1px rgba(0,0,0,.12),0 30px 80px rgba(0,0,0,.2);color:var(--text)">
+      <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.3;mix-blend-mode:overlay;pointer-events:none"></div>
+      <div style="position:absolute;top:0;left:0;right:0;height:24px;background:var(--menubar);backdrop-filter:blur(30px);display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:13px;z-index:10">
+        <div style="display:flex;gap:18px;align-items:center"><span style="font-weight:700">Chrome</span><span>File</span><span>Edit</span><span>Tampilan</span><span>Jendela</span></div>
+        <div style="display:flex;gap:14px;align-items:center">
+          <span style="display:flex;align-items:center;justify-content:center;width:26px;height:20px;border-radius:5px" title="Cermin">
+            <sc-if value="{{ curtain }}" hint-placeholder-val="{{ false }}">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="5" y="2" width="8" height="14" rx="2.2"></rect><path d="M2.5 15.5l13-13"></path></svg>
+            </sc-if>
+            <sc-if value="{{ notCurtain }}" hint-placeholder-val="{{ true }}">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="5" y="2" width="8" height="14" rx="2.2"></rect><path d="M7.7 4.2h2.6"></path></svg>
+            </sc-if>
+          </span>
+          <span>Sel 3 Nov  09.41</span>
+        </div>
+      </div>
+
+      <div onMouseDown="{{ focusDash }}" style="position:absolute;left:36px;top:52px;width:1100px;height:700px;border-radius:16px;overflow:hidden;background:var(--bg);box-shadow:var(--shadow);z-index:{{ dashZ }};display:flex;flex-direction:column">
+        <div style="height:46px;flex:none;display:flex;align-items:center;gap:14px;padding:0 16px;background:var(--bg2);border-bottom:1px solid var(--sep)">
+          <div style="display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:#febc2e"></span><span style="width:12px;height:12px;border-radius:50%;background:#28c840"></span></div>
+          <div style="flex:1;height:28px;border-radius:14px;background:var(--fill);display:flex;align-items:center;padding:0 14px;font-size:12px;color:var(--text2)">dashboard.klinik.example/pasien</div>
+        </div>
+        <div style="flex:1;background:repeating-linear-gradient(135deg,var(--fill) 0 12px,transparent 12px 24px);display:flex;align-items:center;justify-content:center">
+          <span style="font:500 12px ui-monospace,Menlo,monospace;color:var(--text2);background:var(--bg);padding:6px 10px;border-radius:6px">dashboard web / macOS — ikut di-share bersama iPhone</span>
+        </div>
+      </div>
+
+      <div onMouseDown="{{ focusMirror }}" onMouseEnter="{{ enter }}" onMouseLeave="{{ leave }}" style="position:absolute;left:{{ winL }}px;top:{{ winT }}px;width:{{ winW }}px;height:{{ winH }}px;border-radius:{{ winR }}px;overflow:hidden;box-shadow:var(--shadow);z-index:{{ mirrorZ }};background:#000;transition:width 200ms,height 200ms,left 200ms,top 200ms">
+        <sc-if value="{{ notCurtain }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;inset:0;background:repeating-linear-gradient(135deg,#e9ecee 0 12px,#e0e4e7 12px 24px);display:flex;align-items:center;justify-content:center">
+            <span style="font:500 11px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.5);background:rgba(255,255,255,.75);padding:4px 8px;border-radius:4px">layar iPhone · live</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ curtain }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;inset:0;background:repeating-radial-gradient(circle at 50% 44%,transparent 0 21px,var(--ring) 21px 22px),var(--curtain);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center">
+            <div style="position:absolute;inset:0;background:radial-gradient(60% 40% at 50% 44%,transparent,var(--curtain) 100%)"></div>
+            <div style="position:relative;width:60px;height:60px;border-radius:50%;background:var(--glass);box-shadow:var(--glassShadow);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;color:var(--text2)">
+              <svg width="24" height="24" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"></path><circle cx="8" cy="8" r="2"></circle><path d="M2.5 13.5l11-11"></path></svg>
+            </div>
+            <div style="position:relative;font-family:ui-serif,'New York',Georgia,serif;font-size:19px;font-weight:500;line-height:1.25;color:var(--text);text-wrap:balance">Layar disembunyikan sementara</div>
+            <div style="position:relative;display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center;font-size:12px;color:var(--text2)">
+              <span style="height:20px;padding:0 6px;border-radius:5px;background:var(--card);box-shadow:0 0 0 .5px var(--sep),0 1px 0 var(--sep);display:inline-flex;align-items:center;font-size:11px">⌃⌥⌘P</span><span>untuk menampilkan</span>
+            </div>
+            <div style="position:absolute;bottom:18px;font-family:ui-serif,'New York',Georgia,serif;font-style:italic;font-size:12px;color:var(--text3)">Cermin</div>
+          </div>
+        </sc-if>
+
+        <div style="position:absolute;top:16px;left:18px;display:flex;gap:8px;opacity:{{ tbOp }};transition:opacity 150ms"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:#febc2e"></span><span style="width:12px;height:12px;border-radius:50%;background:#28c840"></span></div>
+
+        <div style="position:absolute;top:40px;left:50%;transform:translateX(-50%);height:38px;padding:0 5px;display:flex;align-items:center;gap:1px;border-radius:19px;background:var(--glass);backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);box-shadow:var(--glassShadow);color:var(--text);opacity:{{ tbOp }};pointer-events:{{ tbPE }};transition:opacity 150ms;white-space:nowrap">
+          <button onClick="{{ togglePin }}" title="Selalu di Atas (⌘T)" style="width:30px;height:30px;border:0;border-radius:15px;background:{{ pinBg }};color:{{ pinFg }};display:flex;align-items:center;justify-content:center;cursor:default;padding:0" style-hover="background:var(--fill)">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="5.5" r="3.5"></circle><path d="M8 9v5.5"></path></svg>
+          </button>
+          <button onClick="{{ shoot }}" title="Screenshot (⌘S)" style="width:30px;height:30px;border:0;border-radius:15px;background:transparent;color:inherit;display:flex;align-items:center;justify-content:center;cursor:default;padding:0;opacity:{{ shotOp }}" style-hover="background:var(--fill)">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="1.75" y="4.25" width="12.5" height="9" rx="2"></rect><circle cx="8" cy="8.75" r="2.4"></circle><path d="M5.5 4.25l1-1.75h3l1 1.75"></path></svg>
+          </button>
+          <button onClick="{{ toggleCurtain }}" title="Privacy Curtain (⌃⌥⌘P)" style="width:30px;height:30px;border:0;border-radius:15px;background:{{ curBg }};color:{{ curFg }};display:flex;align-items:center;justify-content:center;cursor:default;padding:0" style-hover="background:var(--fill)">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"></path><circle cx="8" cy="8" r="2"></circle><path d="M2.5 13.5l11-11"></path></svg>
+          </button>
+          <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ toggleAudio }}" title="Audio iPhone" style="width:30px;height:30px;border:0;border-radius:15px;background:transparent;color:inherit;display:flex;align-items:center;justify-content:center;cursor:default;padding:0" style-hover="background:var(--fill)">
+              <sc-if value="{{ audio }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6h2.3L8 3.2v9.6L4.8 10H2.5z"></path><path d="M10.8 5.6a3.4 3.4 0 0 1 0 4.8"></path><path d="M12.6 3.8a6 6 0 0 1 0 8.4"></path></svg></sc-if>
+              <sc-if value="{{ notAudio }}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6h2.3L8 3.2v9.6L4.8 10H2.5z"></path><path d="M10.5 6l3 4M13.5 6l-3 4"></path></svg></sc-if>
+            </button>
+          </sc-if>
+          <span style="width:1px;height:16px;background:var(--sep);margin:0 3px"></span>
+          <button onClick="{{ toggleSizeMenu }}" title="Ukuran jendela" style="height:30px;border:0;border-radius:15px;background:transparent;color:inherit;display:flex;align-items:center;gap:3px;cursor:default;padding:0 8px;font:500 12px -apple-system,BlinkMacSystemFont,sans-serif" style-hover="background:var(--fill)">{{ size }}<svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1.5 3l2.5 2.5L6.5 3"></path></svg></button>
+          <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+            <span style="width:1px;height:16px;background:var(--sep);margin:0 3px"></span>
+            <button title="Pengaturan (⌘,)" style="width:30px;height:30px;border:0;border-radius:15px;background:transparent;color:inherit;display:flex;align-items:center;justify-content:center;cursor:default;padding:0" style-hover="background:var(--fill)">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor"><circle cx="8" cy="8" r="2.1" stroke-width="1.4"></circle><circle cx="8" cy="8" r="5.3" stroke-width="2.2" stroke-dasharray="2 1.5"></circle></svg>
+            </button>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ sizeOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;top:86px;left:50%;transform:translateX(-50%);width:156px;padding:5px 0;border-radius:12px;background:var(--menu);backdrop-filter:blur(30px);box-shadow:var(--glassShadow);font-size:13px;z-index:3">
+            <sc-for list="{{ sizeItems }}" as="it" hint-placeholder-count="4">
+              <div onClick="{{ it.pick }}" style="display:flex;align-items:center;height:24px;margin:0 5px;padding:0 8px 0 4px;border-radius:6px;gap:4px;color:var(--text)" style-hover="background:var(--accentBg);color:#fff">
+                <span style="width:14px;font-size:11px">{{ it.check }}</span><span style="flex:1">{{ it.label }}</span><span style="opacity:.5;font-size:12px">{{ it.key }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);padding:5px 11px;border-radius:999px;background:var(--glass);backdrop-filter:blur(20px);box-shadow:var(--glassShadow);font-size:11px;font-weight:500;color:var(--text);opacity:{{ pillOp }};transition:opacity 300ms;white-space:nowrap;display:flex;gap:6px;align-items:center"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent)"></span>USB · 60 fps</div>
+
+        <div style="position:absolute;bottom:22px;left:50%;transform:translateX(-50%);padding:8px 14px 8px 8px;border-radius:999px;background:var(--glass);backdrop-filter:blur(20px);box-shadow:var(--glassShadow);font-size:12px;font-weight:500;color:var(--text);display:flex;gap:8px;align-items:center;opacity:{{ toastOp }};transition:opacity 150ms;white-space:nowrap;pointer-events:none">
+          <span style="width:20px;height:20px;border-radius:50%;background:var(--accentBg);display:flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5l2.5 2.5L12 5.5"></path></svg></span>Screenshot tersimpan
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="d-window" data-screen-label="02 Jendela mirror" style="padding:32px 64px 64px;display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;align-items:baseline;gap:14px">
+    <span style="font:600 11px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.45)">02 · D2–D9</span>
+    <h2 style="margin:0;font-family:ui-serif,'New York',Georgia,serif;font-size:34px;font-weight:500;letter-spacing:-.02em">Jendela mirror</h2>
+    <span style="font-size:13px;color:rgba(0,0,0,.5)">300 × 650 · rasio 1179:2556 · radius 27</span>
+  </div>
+  <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+    <div style="{{ t.vars }}">
+      <div style="position:relative;overflow:hidden;width:max-content;background:var(--wallpaper);border-radius:20px;padding:32px 36px 44px;display:flex;flex-direction:column;gap:16px;color:var(--text);margin-bottom:24px">
+        <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.3;mix-blend-mode:overlay;pointer-events:none"></div>
+        <div style="position:relative;font:600 11px ui-monospace,Menlo,monospace;color:var(--text2);letter-spacing:.12em">{{ t.name }}</div>
+        <div style="position:relative;display:flex;gap:36px;align-items:flex-start">
+
+          <div style="flex:none;display:flex;flex-direction:column;gap:10px">
+            <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D2</b> Menunggu iPhone</div>
+            <div style="width:300px;height:650px;border-radius:27px;overflow:hidden;position:relative;background:var(--bg);box-shadow:var(--shadow);display:flex;flex-direction:column;padding:48px 20px 22px;gap:20px">
+              <div style="position:absolute;top:18px;left:20px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:#febc2e"></span><span style="width:12px;height:12px;border-radius:50%;background:#28c840"></span></div>
+              <div style="height:236px;border-radius:20px;position:relative;overflow:hidden;background:var(--artBg)">
+                <div style="position:absolute;left:50%;top:44%;width:220px;height:220px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,var(--art1),transparent 62%)"></div>
+                <div style="position:absolute;left:72%;top:30%;width:120px;height:120px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,var(--art2),transparent 62%)"></div>
+                <div style="position:absolute;left:0;right:0;top:160px;height:1px;background:var(--horizon)"></div>
+                <div style="position:absolute;left:50%;top:38px;width:64px;height:122px;margin-left:-32px;border-radius:15px;border:2px solid var(--text);background:var(--bg)"><div style="width:16px;height:4px;border-radius:2px;background:var(--text);margin:6px auto 0"></div></div>
+                <div style="position:absolute;left:50%;top:161px;width:64px;height:122px;margin-left:-32px;border-radius:15px;border:2px solid var(--text);opacity:.22;-webkit-mask-image:linear-gradient(180deg,#000,transparent 55%);mask-image:linear-gradient(180deg,#000,transparent 55%)"></div>
+                <div style="position:absolute;left:calc(50% - 1px);top:158px;width:96px;height:26px;border-left:2px solid var(--accent);border-bottom:2px solid var(--accent);border-bottom-left-radius:18px"></div>
+                <div style="position:absolute;left:calc(50% + 92px);top:178px;width:12px;height:10px;border-radius:3px;background:var(--accent)"></div>
+                <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.25;mix-blend-mode:overlay"></div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:24px;font-weight:500;line-height:1.15;letter-spacing:-.01em">Colokkan iPhone kamu</div>
+                <div style="font-size:13px;line-height:1.45;color:var(--text2);text-wrap:pretty">Pakai kabel data. Buka kunci iPhone dan ketuk <i>Percayai</i> bila diminta.</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;padding-left:2px">
+                <div style="display:flex;align-items:center;gap:10px"><span style="width:18px;height:18px;border-radius:50%;background:var(--accentBg);display:flex;align-items:center;justify-content:center;flex:none"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5l2.5 2.5L12 5.5"></path></svg></span><span style="color:var(--text2);text-decoration:line-through;text-decoration-color:var(--text3)">Kabel terdeteksi</span></div>
+                <div style="display:flex;align-items:center;gap:10px"><span style="width:18px;height:18px;border-radius:50%;border:2px solid var(--fill2);border-top-color:var(--accent);flex:none"></span><span style="font-weight:600">Buka kunci iPhone</span></div>
+                <div style="display:flex;align-items:center;gap:10px;color:var(--text2)"><span style="width:18px;height:18px;border-radius:50%;border:1.5px dashed var(--fill2);flex:none"></span>Ketuk “Percayai”</div>
+              </div>
+              <div style="margin-top:auto;font-size:12px;color:var(--accent);font-weight:500;text-align:center">Tidak terdeteksi?</div>
+            </div>
+          </div>
+
+          <div style="flex:none;display:flex;flex-direction:column;gap:10px">
+            <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D3</b> Menyambungkan</div>
+            <div style="width:300px;height:650px;border-radius:27px;overflow:hidden;position:relative;background:var(--bg);box-shadow:var(--shadow)">
+              <div style="position:absolute;top:18px;left:20px;display:flex;gap:8px;z-index:2"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:#febc2e"></span><span style="width:12px;height:12px;border-radius:50%;background:#28c840"></span></div>
+              <div style="position:absolute;inset:0;background:var(--artBg2)"></div>
+              <div style="position:absolute;left:50%;top:300px;width:280px;height:280px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,var(--art1),transparent 62%)"></div>
+              <div style="position:absolute;left:50%;top:300px;width:150px;height:150px;transform:translate(-50%,-50%);border-radius:50%;border:1px solid var(--accent);opacity:.5"></div>
+              <div style="position:absolute;left:50%;top:300px;width:220px;height:220px;transform:translate(-50%,-50%);border-radius:50%;border:1px solid var(--accent);opacity:.22"></div>
+              <div style="position:absolute;left:0;right:0;top:362px;height:1px;background:var(--horizon)"></div>
+              <div style="position:absolute;left:50%;top:238px;width:62px;height:124px;margin-left:-31px;border-radius:15px;border:2px solid var(--text);background:var(--bg)"><div style="width:16px;height:4px;border-radius:2px;background:var(--text);margin:6px auto 0"></div></div>
+              <div style="position:absolute;left:50%;top:363px;width:62px;height:124px;margin-left:-31px;border-radius:15px;border:2px solid var(--text);opacity:.2;-webkit-mask-image:linear-gradient(180deg,#000,transparent 50%);mask-image:linear-gradient(180deg,#000,transparent 50%)"></div>
+              <div style="position:absolute;left:0;right:0;bottom:64px;display:flex;flex-direction:column;align-items:center;gap:4px">
+                <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:20px;font-weight:500">Menyambungkan…</div>
+                <div style="font-size:12px;color:var(--text2)">iPhone Egie · USB</div>
+              </div>
+              <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.22;mix-blend-mode:overlay"></div>
+            </div>
+          </div>
+
+          <div style="flex:none;display:flex;flex-direction:column;gap:10px">
+            <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D4</b> Mirroring · diam</div>
+            <div style="width:300px;height:650px;border-radius:27px;overflow:hidden;position:relative;box-shadow:var(--shadow);background:repeating-linear-gradient(135deg,#e9ecee 0 12px,#e0e4e7 12px 24px);display:flex;align-items:center;justify-content:center">
+              <span style="font:500 11px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.5);background:rgba(255,255,255,.75);padding:4px 8px;border-radius:4px">layar iPhone · live</span>
+            </div>
+          </div>
+
+          <div style="flex:none;display:flex;flex-direction:column;gap:10px">
+            <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D4</b> Mirroring · hover</div>
+            <div style="width:300px;height:650px;border-radius:27px;overflow:hidden;position:relative;box-shadow:var(--shadow);background:repeating-linear-gradient(135deg,#e9ecee 0 12px,#e0e4e7 12px 24px);display:flex;align-items:center;justify-content:center">
+              <span style="font:500 11px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.5);background:rgba(255,255,255,.75);padding:4px 8px;border-radius:4px">layar iPhone · live</span>
+              <div style="position:absolute;top:18px;left:20px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:#febc2e"></span><span style="width:12px;height:12px;border-radius:50%;background:#28c840"></span></div>
+              <div style="position:absolute;top:40px;left:50%;transform:translateX(-50%);height:38px;padding:0 5px;display:flex;align-items:center;gap:1px;border-radius:19px;background:var(--glass);backdrop-filter:blur(22px) saturate(180%);box-shadow:var(--glassShadow);color:var(--text);white-space:nowrap">
+                <span style="width:30px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center;color:var(--accent);background:var(--fill)"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="5.5" r="3.5"></circle><path d="M8 9v5.5"></path></svg></span>
+                <span style="width:30px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="1.75" y="4.25" width="12.5" height="9" rx="2"></rect><circle cx="8" cy="8.75" r="2.4"></circle><path d="M5.5 4.25l1-1.75h3l1 1.75"></path></svg></span>
+                <span style="width:30px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"></path><circle cx="8" cy="8" r="2"></circle><path d="M2.5 13.5l11-11"></path></svg></span>
+                <span style="width:30px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6h2.3L8 3.2v9.6L4.8 10H2.5z"></path><path d="M10.5 6l3 4M13.5 6l-3 4"></path></svg></span>
+                <span style="width:1px;height:16px;background:var(--sep);margin:0 3px"></span>
+                <span style="height:30px;border-radius:15px;display:flex;align-items:center;gap:3px;padding:0 8px;font-size:12px;font-weight:500">75%<svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1.5 3l2.5 2.5L6.5 3"></path></svg></span>
+                <span style="width:1px;height:16px;background:var(--sep);margin:0 3px"></span>
+                <span style="width:30px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor"><circle cx="8" cy="8" r="2.1" stroke-width="1.4"></circle><circle cx="8" cy="8" r="5.3" stroke-width="2.2" stroke-dasharray="2 1.5"></circle></svg></span>
+              </div>
+              <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);padding:5px 11px;border-radius:999px;background:var(--glass);backdrop-filter:blur(20px);box-shadow:var(--glassShadow);font-size:11px;font-weight:500;color:var(--text);white-space:nowrap;display:flex;gap:6px;align-items:center"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent)"></span>USB · 60 fps</div>
+            </div>
+          </div>
+
+          <div style="flex:none;display:flex;flex-direction:column;gap:10px">
+            <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D5</b> Privacy Curtain</div>
+            <div style="width:300px;height:650px;border-radius:27px;overflow:hidden;position:relative;background:repeating-radial-gradient(circle at 50% 44%,transparent 0 21px,var(--ring) 21px 22px),var(--curtain);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center">
+              <div style="position:absolute;inset:0;background:radial-gradient(60% 40% at 50% 44%,transparent,var(--curtain) 100%)"></div>
+              <div style="position:relative;width:64px;height:64px;border-radius:50%;background:var(--glass);box-shadow:var(--glassShadow);display:flex;align-items:center;justify-content:center;color:var(--text2)"><svg width="26" height="26" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"></path><circle cx="8" cy="8" r="2"></circle><path d="M2.5 13.5l11-11"></path></svg></div>
+              <div style="position:relative;font-family:ui-serif,'New York',Georgia,serif;font-size:21px;font-weight:500;line-height:1.2;text-wrap:balance">Layar disembunyikan sementara</div>
+              <div style="position:relative;display:flex;gap:6px;align-items:center;font-size:12px;color:var(--text2)">
+                <span style="height:20px;padding:0 6px;border-radius:5px;background:var(--card);box-shadow:0 0 0 .5px var(--sep),0 1px 0 var(--sep);display:inline-flex;align-items:center;font-size:11px">⌃⌥⌘P</span><span>untuk menampilkan</span>
+              </div>
+              <div style="position:absolute;bottom:18px;font-family:ui-serif,'New York',Georgia,serif;font-style:italic;font-size:12px;color:var(--text3)">Cermin</div>
+            </div>
+          </div>
+
+          <div style="flex:none;display:flex;flex-direction:column;gap:10px">
+            <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D6</b> Terputus</div>
+            <div style="width:300px;height:650px;border-radius:27px;overflow:hidden;position:relative;box-shadow:var(--shadow);background:#888">
+              <div style="position:absolute;inset:-40px;background:repeating-linear-gradient(135deg,#e6e9ec 0 12px,#c9ced3 12px 24px);filter:blur(28px)"></div>
+              <div style="position:absolute;inset:0;background:var(--veil)"></div>
+              <div style="position:absolute;left:50%;top:44%;width:240px;height:240px;transform:translate(-50%,-50%);border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 23px,var(--ring2) 23px 24px);-webkit-mask-image:radial-gradient(circle,#000 30%,transparent 70%);mask-image:radial-gradient(circle,#000 30%,transparent 70%)"></div>
+              <div style="position:absolute;left:24px;right:24px;top:44%;transform:translateY(-50%);padding:22px 18px;border-radius:22px;background:var(--glass);backdrop-filter:blur(20px);box-shadow:var(--glassShadow);display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">
+                <span style="width:20px;height:20px;border-radius:50%;border:2px solid var(--fill2);border-top-color:var(--text2)"></span>
+                <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:20px;font-weight:500">iPhone terputus.</div>
+                <div style="font-size:13px;color:var(--text2)">Menunggu tersambung kembali…</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="flex:none;display:flex;flex-direction:column;gap:10px">
+            <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D9</b> Toast screenshot</div>
+            <div style="width:300px;height:650px;border-radius:27px;overflow:hidden;position:relative;box-shadow:var(--shadow);background:repeating-linear-gradient(135deg,#e9ecee 0 12px,#e0e4e7 12px 24px);display:flex;align-items:center;justify-content:center">
+              <span style="font:500 11px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.5);background:rgba(255,255,255,.75);padding:4px 8px;border-radius:4px">layar iPhone · live</span>
+              <div style="position:absolute;bottom:22px;left:50%;transform:translateX(-50%);padding:8px 14px 8px 8px;border-radius:999px;background:var(--glass);backdrop-filter:blur(20px);box-shadow:var(--glassShadow);font-size:12px;font-weight:500;color:var(--text);display:flex;gap:8px;align-items:center;white-space:nowrap">
+                <span style="width:20px;height:20px;border-radius:50%;background:var(--accentBg);display:flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5l2.5 2.5L12 5.5"></path></svg></span>Screenshot tersimpan
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </sc-for>
+</section>
+
+<section id="d1" data-screen-label="03 Onboarding" style="padding:32px 64px 64px;display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;align-items:baseline;gap:14px">
+    <span style="font:600 11px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.45)">03 · D1</span>
+    <h2 style="margin:0;font-family:ui-serif,'New York',Georgia,serif;font-size:34px;font-weight:500;letter-spacing:-.02em">Onboarding</h2>
+    <span style="font-size:13px;color:rgba(0,0,0,.5)">680 × 440 · panel seni kiri + konten kanan</span>
+  </div>
+  <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+    <div style="{{ t.vars }}">
+      <div style="position:relative;overflow:hidden;width:max-content;background:var(--wallpaper);border-radius:20px;padding:32px 36px 44px;display:flex;flex-direction:column;gap:16px;color:var(--text);margin-bottom:24px">
+        <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.3;mix-blend-mode:overlay;pointer-events:none"></div>
+        <div style="position:relative;font:600 11px ui-monospace,Menlo,monospace;color:var(--text2);letter-spacing:.12em">{{ t.name }}</div>
+        <div style="position:relative;display:flex;gap:36px">
+
+          <div style="flex:none;width:680px;height:440px;border-radius:18px;background:var(--bg);box-shadow:var(--shadow);position:relative;display:flex;overflow:hidden">
+            <div style="width:260px;flex:none;position:relative;overflow:hidden;background:var(--wallpaper)">
+              <div style="position:absolute;left:0;right:0;top:250px;height:1px;background:var(--horizon)"></div>
+              <div style="position:absolute;left:62px;top:110px;width:62px;height:140px;border-radius:15px;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.18)"></div>
+              <div style="position:absolute;left:136px;top:110px;width:62px;height:140px;border-radius:15px;background:linear-gradient(90deg,rgba(255,255,255,.65),rgba(255,255,255,.08));box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)"></div>
+              <div style="position:absolute;left:129px;top:90px;width:1px;height:180px;background:rgba(255,255,255,.7)"></div>
+              <div style="position:absolute;left:62px;top:251px;width:62px;height:140px;border-radius:15px;background:#fff;opacity:.28;-webkit-mask-image:linear-gradient(180deg,#000,transparent 55%);mask-image:linear-gradient(180deg,#000,transparent 55%)"></div>
+              <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.35;mix-blend-mode:overlay"></div>
+              <div style="position:absolute;top:16px;left:16px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.5)"></span><span style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.5)"></span></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;padding:44px 36px 20px">
+              <div style="font:500 11px ui-monospace,Menlo,monospace;color:var(--text3);letter-spacing:.1em">01 / 03</div>
+              <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:34px;font-weight:500;line-height:1.05;letter-spacing:-.02em;margin-top:14px">Selamat datang<br><i>di Cermin</i></div>
+              <div style="font-size:13px;color:var(--text2);line-height:1.5;margin-top:12px">Tampilkan layar iPhone di jendela Mac untuk demo dan meeting.</div>
+              <div style="display:flex;flex-direction:column;gap:10px;margin-top:22px;font-size:13px">
+                <div style="display:flex;gap:10px;align-items:baseline"><span style="font-family:ui-serif,'New York',Georgia,serif;font-style:italic;color:var(--accent);width:16px">i</span><span><b>iPhone tetap di tangan</b> <span style="color:var(--text2)">— tidak terkunci</span></span></div>
+                <div style="display:flex;gap:10px;align-items:baseline"><span style="font-family:ui-serif,'New York',Georgia,serif;font-style:italic;color:var(--accent);width:16px">ii</span><span><b>Mac tetap bebas</b> <span style="color:var(--text2)">— tanpa fullscreen</span></span></div>
+                <div style="display:flex;gap:10px;align-items:baseline"><span style="font-family:ui-serif,'New York',Georgia,serif;font-style:italic;color:var(--accent);width:16px">iii</span><span><b>Tanpa watermark</b> <span style="color:var(--text2)">— gratis &amp; offline</span></span></div>
+              </div>
+              <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between">
+                <div style="display:flex;gap:6px"><span style="width:18px;height:6px;border-radius:3px;background:var(--text)"></span><span style="width:6px;height:6px;border-radius:50%;background:var(--fill2)"></span><span style="width:6px;height:6px;border-radius:50%;background:var(--fill2)"></span></div>
+                <span style="height:30px;padding:0 18px;border-radius:15px;background:var(--accentBg);color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center">Lanjut</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="flex:none;width:680px;height:440px;border-radius:18px;background:var(--bg);box-shadow:var(--shadow);position:relative;display:flex;overflow:hidden">
+            <div style="width:260px;flex:none;position:relative;overflow:hidden;background:var(--wallpaper)">
+              <div style="position:absolute;left:0;right:0;top:250px;height:1px;background:var(--horizon)"></div>
+              <div style="position:absolute;left:130px;top:170px;width:150px;height:150px;transform:translate(-50%,-50%);border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.7);background:radial-gradient(circle,rgba(255,255,255,.35),transparent 70%)"></div>
+              <div style="position:absolute;left:130px;top:170px;width:100px;height:100px;transform:translate(-50%,-50%);border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.8)"></div>
+              <div style="position:absolute;left:130px;top:170px;width:54px;height:54px;transform:translate(-50%,-50%);border-radius:50%;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.2)"></div>
+              <div style="position:absolute;left:130px;top:170px;width:18px;height:18px;transform:translate(-50%,-50%);border-radius:50%;background:var(--accentBg)"></div>
+              <div style="position:absolute;left:130px;top:330px;width:150px;height:150px;transform:translate(-50%,-50%);border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);opacity:.6;-webkit-mask-image:linear-gradient(180deg,#000,transparent 50%);mask-image:linear-gradient(180deg,#000,transparent 50%)"></div>
+              <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.35;mix-blend-mode:overlay"></div>
+              <div style="position:absolute;top:16px;left:16px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.5)"></span><span style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.5)"></span></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;padding:44px 36px 20px">
+              <div style="font:500 11px ui-monospace,Menlo,monospace;color:var(--text3);letter-spacing:.1em">02 / 03</div>
+              <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:34px;font-weight:500;line-height:1.05;letter-spacing:-.02em;margin-top:14px">Izinkan akses<br><i>Kamera</i></div>
+              <div style="margin-top:16px;padding:14px 16px;border-radius:14px;background:var(--card);box-shadow:0 0 0 .5px var(--sep);font-size:13px;line-height:1.5">
+                <div style="font-weight:600;margin-bottom:2px">Kenapa butuh akses Kamera?</div>
+                <div style="color:var(--text2)">macOS memperlakukan layar iPhone yang dicolok sebagai perangkat kamera. Cermin tidak memakai kamera Mac kamu.</div>
+              </div>
+              <div style="font-size:12px;color:var(--text3);margin-top:10px">Tidak ada data yang dikirim ke internet.</div>
+              <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between">
+                <div style="display:flex;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:var(--fill2)"></span><span style="width:18px;height:6px;border-radius:3px;background:var(--text)"></span><span style="width:6px;height:6px;border-radius:50%;background:var(--fill2)"></span></div>
+                <div style="display:flex;gap:8px">
+                  <span style="height:30px;padding:0 16px;border-radius:15px;background:var(--fill);font-size:13px;display:flex;align-items:center">Kembali</span>
+                  <span style="height:30px;padding:0 18px;border-radius:15px;background:var(--accentBg);color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center">Izinkan Akses Kamera</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="flex:none;width:680px;height:440px;border-radius:18px;background:var(--bg);box-shadow:var(--shadow);position:relative;display:flex;overflow:hidden">
+            <div style="width:260px;flex:none;position:relative;overflow:hidden;background:var(--wallpaper)">
+              <div style="position:absolute;left:0;right:0;top:250px;height:1px;background:var(--horizon)"></div>
+              <div style="position:absolute;left:98px;top:108px;width:64px;height:142px;border-radius:15px;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.18)"><div style="width:16px;height:4px;border-radius:2px;background:rgba(0,0,0,.8);margin:7px auto 0"></div></div>
+              <div style="position:absolute;left:146px;top:94px;width:30px;height:30px;border-radius:50%;background:var(--accentBg);box-shadow:0 0 0 3px rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5l2.5 2.5L12 5.5"></path></svg></div>
+              <div style="position:absolute;left:129px;top:247px;width:100px;height:34px;border-left:2px solid #fff;border-bottom:2px solid #fff;border-bottom-left-radius:22px;opacity:.9"></div>
+              <div style="position:absolute;left:98px;top:251px;width:64px;height:142px;border-radius:15px;background:#fff;opacity:.25;-webkit-mask-image:linear-gradient(180deg,#000,transparent 50%);mask-image:linear-gradient(180deg,#000,transparent 50%)"></div>
+              <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.35;mix-blend-mode:overlay"></div>
+              <div style="position:absolute;top:16px;left:16px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.5)"></span><span style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.5)"></span></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;padding:44px 36px 20px">
+              <div style="font:500 11px ui-monospace,Menlo,monospace;color:var(--text3);letter-spacing:.1em">03 / 03</div>
+              <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:34px;font-weight:500;line-height:1.05;letter-spacing:-.02em;margin-top:14px">Sambungkan<br><i>iPhone</i></div>
+              <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px;font-size:13px">
+                <div style="display:flex;gap:12px;align-items:center"><span style="width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--sep);display:flex;align-items:center;justify-content:center;font-family:ui-serif,'New York',Georgia,serif;font-size:13px">1</span>Colokkan kabel data</div>
+                <div style="display:flex;gap:12px;align-items:center"><span style="width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--sep);display:flex;align-items:center;justify-content:center;font-family:ui-serif,'New York',Georgia,serif;font-size:13px">2</span>Ketuk “Percayai” di iPhone</div>
+                <div style="display:flex;gap:12px;align-items:center"><span style="width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--sep);display:flex;align-items:center;justify-content:center;font-family:ui-serif,'New York',Georgia,serif;font-size:13px">3</span>Buka kunci iPhone</div>
+              </div>
+              <div style="font-size:12px;color:var(--text2);line-height:1.45;margin-top:18px;padding-top:14px;border-top:1px solid var(--sep)">Sebelum meeting, aktifkan Focus Mode di iPhone supaya notifikasi tidak ikut tampil.</div>
+              <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between">
+                <div style="display:flex;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:var(--fill2)"></span><span style="width:6px;height:6px;border-radius:50%;background:var(--fill2)"></span><span style="width:18px;height:6px;border-radius:3px;background:var(--text)"></span></div>
+                <div style="display:flex;gap:8px">
+                  <span style="height:30px;padding:0 16px;border-radius:15px;background:var(--fill);font-size:13px;display:flex;align-items:center">Kembali</span>
+                  <span style="height:30px;padding:0 18px;border-radius:15px;background:var(--accentBg);color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center">Mulai</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </sc-for>
+</section>
+
+<section id="d7" data-screen-label="04 Menu bar &amp; Settings" style="padding:32px 64px 64px;display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;align-items:baseline;gap:14px">
+    <span style="font:600 11px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.45)">04 · D7 · D8</span>
+    <h2 style="margin:0;font-family:ui-serif,'New York',Georgia,serif;font-size:34px;font-weight:500;letter-spacing:-.02em">Menu bar &amp; Settings</h2>
+    <span style="font-size:13px;color:rgba(0,0,0,.5)">Light: normal · Dark: curtain aktif · tab Settings bisa diklik</span>
+  </div>
+  <div style="display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start">
+    <sc-for list="{{ menuCards }}" as="m" hint-placeholder-count="2">
+      <div style="{{ m.vars }}">
+        <div style="width:420px;height:440px;background:var(--wallpaper);border-radius:20px;overflow:hidden;position:relative;color:var(--text)">
+          <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.3;mix-blend-mode:overlay"></div>
+          <div style="position:absolute;top:0;left:0;right:0;height:24px;background:var(--menubar);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:0 12px;font-size:13px">
+            <span style="display:flex;align-items:center;justify-content:center;width:28px;height:20px;border-radius:5px;background:var(--fill2)">
+              <sc-if value="{{ m.curtain }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="5" y="2" width="8" height="14" rx="2.2"></rect><path d="M2.5 15.5l13-13"></path></svg></sc-if>
+              <sc-if value="{{ m.normal }}" hint-placeholder-val="{{ true }}"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="5" y="2" width="8" height="14" rx="2.2"></rect><path d="M7.7 4.2h2.6"></path></svg></sc-if>
+            </span>
+            <span>Sel 3 Nov  09.41</span>
+          </div>
+          <div style="position:absolute;top:30px;right:96px;width:272px;padding:6px 0;border-radius:14px;background:var(--menu);backdrop-filter:blur(30px);box-shadow:var(--glassShadow);font-size:13px">
+            <div style="margin:2px 6px 6px;padding:10px 10px;border-radius:10px;background:var(--fill);display:flex;gap:10px;align-items:center">
+              <div style="width:22px;height:38px;border-radius:6px;border:1.5px solid var(--text);flex:none"></div>
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:15px;font-weight:500">iPhone Egie</div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text2)"><span style="width:6px;height:6px;border-radius:50%;background:{{ m.dot }}"></span>{{ m.status }}</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;height:24px;margin:0 6px;padding:0 10px 0 6px;border-radius:6px"><span style="width:16px"></span><span style="flex:1">Sembunyikan Jendela</span><span style="color:var(--text3)">⌥⌘M</span></div>
+            <div style="display:flex;align-items:center;height:24px;margin:0 6px;padding:0 10px 0 6px;border-radius:6px;background:var(--accentBg);color:#fff"><span style="width:16px;font-size:12px">✓</span><span style="flex:1">Selalu di Atas</span><span style="opacity:.75">⌘T</span></div>
+            <div style="display:flex;align-items:center;height:24px;margin:0 6px;padding:0 10px 0 6px;border-radius:6px"><span style="width:16px;font-size:12px">{{ m.curtainCheck }}</span><span style="flex:1">Privacy Curtain</span><span style="color:var(--text3)">⌃⌥⌘P</span></div>
+            <div style="display:flex;align-items:center;height:24px;margin:0 6px;padding:0 10px 0 6px;border-radius:6px;color:{{ m.shotColor }}"><span style="width:16px"></span><span style="flex:1">Ambil Screenshot</span><span style="color:var(--text3)">⌘S</span></div>
+            <div style="height:1px;background:var(--sep);margin:5px 14px"></div>
+            <div style="display:flex;align-items:center;height:24px;margin:0 6px;padding:0 10px 0 6px;border-radius:6px"><span style="width:16px"></span><span style="flex:1">Sumber</span><span style="color:var(--text3)">USB  ›</span></div>
+            <div style="display:flex;align-items:center;height:24px;margin:0 6px;padding:0 10px 0 6px;border-radius:6px"><span style="width:16px"></span><span style="flex:1">Pengaturan…</span><span style="color:var(--text3)">⌘,</span></div>
+            <div style="height:1px;background:var(--sep);margin:5px 14px"></div>
+            <div style="display:flex;align-items:center;height:24px;margin:0 6px;padding:0 10px 0 6px;border-radius:6px"><span style="width:16px"></span><span style="flex:1">Keluar dari Cermin</span><span style="color:var(--text3)">⌘Q</span></div>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+
+    <sc-for list="{{ settingsCards }}" as="c" hint-placeholder-count="2">
+      <div style="{{ c.vars }}">
+        <div style="position:relative;overflow:hidden;width:max-content;background:var(--wallpaper);border-radius:20px;padding:36px;color:var(--text)">
+          <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.3;mix-blend-mode:overlay"></div>
+          <div style="position:relative;width:600px;border-radius:18px;background:var(--bg);box-shadow:var(--shadow);overflow:hidden">
+            <div style="background:var(--bg2);border-bottom:1px solid var(--sep);padding:12px 16px 10px;position:relative">
+              <div style="position:absolute;top:14px;left:16px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:var(--fill2)"></span><span style="width:12px;height:12px;border-radius:50%;background:var(--fill2)"></span></div>
+              <div style="text-align:center;font-size:13px;font-weight:600;margin-bottom:10px">{{ c.title }}</div>
+              <div style="display:flex;justify-content:center;gap:4px">
+                <sc-for list="{{ c.tabs }}" as="tb" hint-placeholder-count="6">
+                  <div onClick="{{ tb.pick }}" style="width:78px;height:50px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:11px;background:{{ tb.bg }};color:{{ tb.fg }};cursor:default" style-hover="background:var(--fill)">
+                    <span style="width:20px;height:20px;border-radius:50%;box-shadow:inset 0 0 0 1.5px currentColor;display:flex;align-items:center;justify-content:center;font-family:ui-serif,'New York',Georgia,serif;font-style:italic;font-size:11px">{{ tb.glyph }}</span>{{ tb.label }}
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:14px;min-height:300px">
+              <sc-if value="{{ c.is.umum }}" hint-placeholder-val="{{ true }}">
+                <div style="border-radius:12px;background:var(--card);box-shadow:0 0 0 .5px var(--sep);font-size:13px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px">Buka saat login<span style="width:32px;height:18px;border-radius:9px;background:var(--accentBg);position:relative"><span style="position:absolute;top:2px;left:16px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-top:1px solid var(--sep)">Selalu di atas secara default<span style="width:32px;height:18px;border-radius:9px;background:var(--accentBg);position:relative"><span style="position:absolute;top:2px;left:16px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-top:1px solid var(--sep)">Mulai mirror otomatis saat iPhone dicolok<span style="width:32px;height:18px;border-radius:9px;background:var(--accentBg);position:relative"><span style="position:absolute;top:2px;left:16px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+                </div>
+                <div style="border-radius:12px;background:var(--card);box-shadow:0 0 0 .5px var(--sep);font-size:13px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;gap:12px"><span>Folder screenshot</span><span style="display:flex;gap:8px;align-items:center;color:var(--text2)">~/Pictures/Cermin<span style="height:24px;padding:0 12px;border-radius:12px;background:var(--fill);color:var(--text);display:flex;align-items:center;font-size:12px">Pilih…</span></span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-top:1px solid var(--sep)">Salin screenshot ke clipboard<span style="width:32px;height:18px;border-radius:9px;background:var(--accentBg);position:relative"><span style="position:absolute;top:2px;left:16px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ c.is.tampilan }}" hint-placeholder-val="{{ false }}">
+                <div style="border-radius:12px;background:var(--card);box-shadow:0 0 0 .5px var(--sep);font-size:13px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px">Sudut membulat mengikuti layar iPhone<span style="width:32px;height:18px;border-radius:9px;background:var(--accentBg);position:relative"><span style="position:absolute;top:2px;left:16px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-top:1px solid var(--sep)">Bingkai perangkat (bezel)<span style="width:32px;height:18px;border-radius:9px;background:var(--fill2);position:relative"><span style="position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-top:1px solid var(--sep)">Tampilkan pill status (2 detik)<span style="width:32px;height:18px;border-radius:9px;background:var(--accentBg);position:relative"><span style="position:absolute;top:2px;left:16px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-top:1px solid var(--sep)">Ukuran awal<span style="height:24px;padding:0 10px;border-radius:12px;background:var(--fill);display:flex;align-items:center;gap:6px;font-size:12px">75% tinggi layar ⌄</span></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ c.is.audio }}" hint-placeholder-val="{{ false }}">
+                <div style="border-radius:12px;background:var(--card);box-shadow:0 0 0 .5px var(--sep);font-size:13px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px">Putar audio iPhone di Mac<span style="width:32px;height:18px;border-radius:9px;background:var(--fill2);position:relative"><span style="position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+                  <div style="display:flex;align-items:center;gap:12px;padding:11px 14px;border-top:1px solid var(--sep);color:var(--text3)">Volume<span style="flex:1;height:4px;border-radius:2px;background:var(--fill2);position:relative"><span style="position:absolute;left:60%;top:-6px;width:16px;height:16px;border-radius:50%;background:var(--card);box-shadow:0 0 0 .5px var(--sep),0 1px 3px rgba(0,0,0,.2)"></span></span></div>
+                </div>
+                <div style="font-size:12px;line-height:1.5;color:var(--text2);padding:0 4px">Saat aktif, suara iPhone bisa berpindah ke Mac dan speaker iPhone senyap. Matikan bila sedang demo video call di iPhone.</div>
+              </sc-if>
+              <sc-if value="{{ c.is.shortcut }}" hint-placeholder-val="{{ false }}">
+                <div style="border-radius:12px;background:var(--card);box-shadow:0 0 0 .5px var(--sep);font-size:13px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px"><span>Privacy Curtain <span style="color:var(--text3);font-size:12px">· global</span></span><span style="height:26px;min-width:100px;padding:0 12px;border-radius:13px;box-shadow:inset 0 0 0 1.5px var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500">⌃⌥⌘P</span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--sep)">Ambil screenshot<span style="height:26px;min-width:100px;padding:0 12px;border-radius:13px;background:var(--fill);display:flex;align-items:center;justify-content:center;font-size:12px">⌘S</span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--sep)">Selalu di atas<span style="height:26px;min-width:100px;padding:0 12px;border-radius:13px;background:var(--fill);display:flex;align-items:center;justify-content:center;font-size:12px">⌘T</span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--sep)">Ukuran 50% / 75% / 100% / Fit<span style="height:26px;min-width:100px;padding:0 12px;border-radius:13px;background:var(--fill);display:flex;align-items:center;justify-content:center;font-size:12px">⌘1 – ⌘4</span></div>
+                </div>
+                <div style="font-size:12px;color:var(--text2);padding:0 4px">Klik kolom lalu tekan kombinasi baru. Shortcut global tetap bekerja saat Zoom atau browser sedang fokus.</div>
+              </sc-if>
+              <sc-if value="{{ c.is.wireless }}" hint-placeholder-val="{{ false }}">
+                <div style="border-radius:12px;background:var(--card);box-shadow:0 0 0 .5px var(--sep);font-size:13px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px">Nama receiver<span style="height:24px;width:170px;padding:0 10px;border-radius:6px;background:var(--bg);box-shadow:inset 0 0 0 1px var(--sep);display:flex;align-items:center;font-size:12px">Cermin</span></div>
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--sep);gap:16px"><span>Kode koneksi</span>
+                    <span style="display:flex;flex-direction:column;gap:7px;font-size:12.5px">
+                      <span style="display:flex;gap:8px;align-items:center"><span style="width:16px;height:16px;border-radius:50%;background:var(--accentBg);display:flex;align-items:center;justify-content:center"><span style="width:6px;height:6px;border-radius:50%;background:#fff"></span></span>Kode baru tiap koneksi</span>
+                      <span style="display:flex;gap:8px;align-items:center"><span style="width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--fill2)"></span>Password tetap</span>
+                      <span style="display:flex;gap:8px;align-items:center"><span style="width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--fill2)"></span>Tanpa kode <span style="color:var(--text3)">· tidak disarankan</span></span>
+                    </span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--sep)">Utamakan USB bila keduanya tersedia<span style="width:32px;height:18px;border-radius:9px;background:var(--accentBg);position:relative"><span style="position:absolute;top:2px;left:16px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--sep)"><span>Mode langsung (P2P) <span style="font:500 10px ui-monospace,Menlo,monospace;padding:2px 6px;border-radius:999px;background:var(--fill);color:var(--text2)">EKSPERIMENTAL</span></span><span style="width:32px;height:18px;border-radius:9px;background:var(--fill2);position:relative"><span style="position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+                </div>
+                <div style="font-size:12px;font-weight:600;color:var(--text2);padding:0 4px">Perangkat Tepercaya</div>
+                <div style="border-radius:12px;background:var(--card);box-shadow:0 0 0 .5px var(--sep);font-size:13px">
+                  <div style="display:flex;align-items:center;gap:10px;padding:9px 14px"><span style="width:14px;height:24px;border-radius:4px;border:1.5px solid var(--text2);flex:none"></span><span style="flex:1">iPhone Egie <span style="color:var(--text3);font-size:12px">· terakhir 3 Nov</span></span><span style="height:22px;padding:0 10px;border-radius:11px;background:var(--fill);font-size:12px;display:flex;align-items:center">Hapus</span></div>
+                  <div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-top:1px solid var(--sep)"><span style="width:14px;height:24px;border-radius:4px;border:1.5px solid var(--text2);flex:none"></span><span style="flex:1">iPhone Demo Klinik <span style="color:var(--text3);font-size:12px">· terakhir 28 Okt</span></span><span style="height:22px;padding:0 10px;border-radius:11px;background:var(--fill);font-size:12px;display:flex;align-items:center">Hapus</span></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ c.is.tentang }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:24px 0;text-align:center">
+                  <div style="width:72px;height:72px;border-radius:22.37%;background:{{ iconBg }};position:relative;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.18)">
+                    <div style="position:absolute;left:23%;top:20%;width:25%;height:60%;border-radius:22%/10%;background:#fff"></div>
+                    <div style="position:absolute;left:52%;top:20%;width:25%;height:60%;border-radius:22%/10%;background:linear-gradient(90deg,rgba(255,255,255,.6),rgba(255,255,255,.08))"></div>
+                  </div>
+                  <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:24px;font-weight:500">Cermin</div>
+                  <div style="font-size:12px;color:var(--text2)">Versi 1.0 (1)</div>
+                  <div style="font-size:12px;color:var(--text2)">Gratis · offline · tanpa watermark · tanpa telemetri</div>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section id="d10" data-screen-label="05 Wireless v1.1" style="padding:32px 64px 64px;display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;align-items:baseline;gap:14px">
+    <span style="font:600 11px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.45)">05 · D10 · D11</span>
+    <h2 style="margin:0;font-family:ui-serif,'New York',Georgia,serif;font-size:34px;font-weight:500;letter-spacing:-.02em">Wireless <i>(v1.1)</i></h2>
+  </div>
+  <div style="display:flex;gap:28px;flex-wrap:wrap">
+    <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+      <div style="{{ t.vars }}">
+        <div style="position:relative;overflow:hidden;width:max-content;background:var(--wallpaper);border-radius:20px;padding:32px 36px 44px;display:flex;gap:36px;color:var(--text)">
+          <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.3;mix-blend-mode:overlay;pointer-events:none"></div>
+          <div style="position:relative;flex:none;display:flex;flex-direction:column;gap:10px">
+            <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D10</b> Siap menerima · {{ t.name }}</div>
+            <div style="width:300px;height:650px;border-radius:27px;overflow:hidden;position:relative;background:var(--bg);box-shadow:var(--shadow);display:flex;flex-direction:column;padding:48px 20px 20px;gap:18px">
+              <div style="position:absolute;top:18px;left:20px;display:flex;gap:8px;z-index:2"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:#febc2e"></span><span style="width:12px;height:12px;border-radius:50%;background:#28c840"></span></div>
+              <div style="display:flex;padding:2px;border-radius:15px;background:var(--fill);font-size:12px;align-self:center">
+                <span style="height:26px;padding:0 16px;border-radius:13px;display:flex;align-items:center;color:var(--text2)">USB</span>
+                <span style="height:26px;padding:0 16px;border-radius:13px;display:flex;align-items:center;background:var(--card);box-shadow:0 0 0 .5px var(--sep),0 1px 3px rgba(0,0,0,.1);font-weight:500">Wireless</span>
+              </div>
+              <div style="height:136px;flex:none;border-radius:20px;position:relative;overflow:hidden;background:var(--artBg)">
+                <div style="position:absolute;left:50%;top:110px;width:300px;height:300px;transform:translate(-50%,-50%);border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 17px,var(--accentSoft) 17px 18px);-webkit-mask-image:radial-gradient(circle,#000 20%,transparent 60%);mask-image:radial-gradient(circle,#000 20%,transparent 60%)"></div>
+                <div style="position:absolute;left:50%;top:110px;width:150px;height:150px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,var(--art1),transparent 65%)"></div>
+                <div style="position:absolute;left:50%;top:48px;width:44px;height:88px;margin-left:-22px;border-radius:11px;border:2px solid var(--text);background:var(--bg)"><div style="width:12px;height:3px;border-radius:2px;background:var(--text);margin:5px auto 0"></div></div>
+                <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.25;mix-blend-mode:overlay"></div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:#34c759;box-shadow:0 0 0 3px rgba(52,199,89,.2)"></span><span style="font-family:ui-serif,'New York',Georgia,serif;font-size:24px;font-weight:500;line-height:1.15">Siap menerima</span></div>
+                <div style="font-size:12.5px;line-height:1.45;color:var(--text2)">iPhone harus di Wi-Fi yang sama: <b style="color:var(--text)">Kantor-5G</b>.</div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;font:500 10.5px ui-monospace,Menlo,monospace;color:var(--text2)"><span style="padding:3px 8px;border-radius:999px;background:var(--fill)">Wi-Fi · Kantor-5G</span><span style="padding:3px 8px;border-radius:999px;background:var(--fill)">IP · 192.168.1.24</span></div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:9px;font-size:13px">
+                <div style="display:flex;gap:10px;align-items:center"><span style="width:20px;height:20px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--sep);font-family:ui-serif,'New York',Georgia,serif;font-size:12px;display:flex;align-items:center;justify-content:center;flex:none">1</span>Buka Control Center di iPhone</div>
+                <div style="display:flex;gap:10px;align-items:center"><span style="width:20px;height:20px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--sep);font-family:ui-serif,'New York',Georgia,serif;font-size:12px;display:flex;align-items:center;justify-content:center;flex:none">2</span>Ketuk Screen Mirroring</div>
+                <div style="display:flex;gap:10px;align-items:center"><span style="width:20px;height:20px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--sep);font-family:ui-serif,'New York',Georgia,serif;font-size:12px;display:flex;align-items:center;justify-content:center;flex:none">3</span><span>Pilih <b>Cermin</b></span></div>
+              </div>
+              <div style="margin-top:auto;padding:12px;border-radius:14px;background:var(--warnBg);font-size:12px;line-height:1.45;display:flex;flex-direction:column;gap:8px">
+                <div style="font-weight:600;color:var(--warn)">AirPlay Receiver bawaan masih aktif</div>
+                <div style="color:var(--text2)">Matikan di Pengaturan Sistem → Umum → AirDrop &amp; Handoff. <a href="{{ t.d14href }}" onClick="{{ t.goD14 }}" style="color:var(--accent);font-weight:500;cursor:pointer">Cermin tidak muncul di iPhone? →</a></div>
+                <span style="align-self:flex-start;height:26px;padding:0 12px;border-radius:13px;background:var(--card);box-shadow:0 0 0 .5px var(--sep);display:flex;align-items:center;font-weight:500;color:var(--text)">Buka Pengaturan</span>
+              </div>
+            </div>
+          </div>
+          <div style="position:relative;flex:none;display:flex;flex-direction:column;gap:10px">
+            <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D11</b> Pilih sumber di toolbar</div>
+            <div style="width:300px;height:650px;border-radius:27px;overflow:hidden;position:relative;box-shadow:var(--shadow);background:repeating-linear-gradient(135deg,#e9ecee 0 12px,#e0e4e7 12px 24px);display:flex;align-items:center;justify-content:center">
+              <span style="font:500 11px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.5);background:rgba(255,255,255,.75);padding:4px 8px;border-radius:4px">layar iPhone · AirPlay</span>
+              <div style="position:absolute;top:18px;left:20px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:#febc2e"></span><span style="width:12px;height:12px;border-radius:50%;background:#28c840"></span></div>
+              <div style="position:absolute;top:40px;left:50%;transform:translateX(-50%);height:38px;padding:0 5px;display:flex;align-items:center;gap:1px;border-radius:19px;background:var(--glass);backdrop-filter:blur(22px) saturate(180%);box-shadow:var(--glassShadow);color:var(--text);white-space:nowrap">
+                <div style="display:flex;padding:2px;border-radius:14px;background:var(--fill);font-size:11px;margin:0 2px">
+                  <span style="height:24px;padding:0 9px;border-radius:12px;display:flex;align-items:center;color:var(--text2)">USB</span>
+                  <span style="height:24px;padding:0 9px;border-radius:12px;display:flex;align-items:center;background:var(--card);box-shadow:0 0 0 .5px var(--sep);font-weight:500">Wi-Fi</span>
+                </div>
+                <span style="width:1px;height:16px;background:var(--sep);margin:0 3px"></span>
+                <span style="width:30px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center;color:var(--accent);background:var(--fill)"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="5.5" r="3.5"></circle><path d="M8 9v5.5"></path></svg></span>
+                <span style="width:30px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="1.75" y="4.25" width="12.5" height="9" rx="2"></rect><circle cx="8" cy="8.75" r="2.4"></circle><path d="M5.5 4.25l1-1.75h3l1 1.75"></path></svg></span>
+                <span style="width:30px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"></path><circle cx="8" cy="8" r="2"></circle><path d="M2.5 13.5l11-11"></path></svg></span>
+                <span style="width:30px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor"><circle cx="8" cy="8" r="2.1" stroke-width="1.4"></circle><circle cx="8" cy="8" r="5.3" stroke-width="2.2" stroke-dasharray="2 1.5"></circle></svg></span>
+              </div>
+              <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);padding:5px 11px;border-radius:999px;background:var(--glass);backdrop-filter:blur(20px);box-shadow:var(--glassShadow);font-size:11px;font-weight:500;color:var(--text);white-space:nowrap;display:flex;gap:6px;align-items:center"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent)"></span>Wireless · 30 fps</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section id="d12" data-screen-label="05a Keamanan &amp; diagnosa v1.1" style="padding:32px 64px 64px;display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">
+    <span style="font:600 11px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.45)">05a · D12 – D15</span>
+    <h2 style="margin:0;font-family:ui-serif,'New York',Georgia,serif;font-size:34px;font-weight:500;letter-spacing:-.02em">Kode, izin &amp; diagnosa <i>(v1.1)</i></h2>
+    <span style="font-size:13px;color:rgba(0,0,0,.5)">D15 juga bisa dilihat di tab Wireless pada Settings (bagian 04)</span>
+  </div>
+  <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+    <div style="{{ t.vars }}">
+      <div style="position:relative;overflow:hidden;width:max-content;background:var(--wallpaper);border-radius:20px;padding:32px 36px 44px;display:flex;flex-direction:column;gap:16px;color:var(--text);margin-bottom:24px">
+        <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.3;mix-blend-mode:overlay;pointer-events:none"></div>
+        <div style="position:relative;font:600 11px ui-monospace,Menlo,monospace;color:var(--text2);letter-spacing:.12em">{{ t.name }}</div>
+        <div style="position:relative;display:flex;gap:36px;align-items:flex-start">
+
+          <div style="flex:none;display:flex;flex-direction:column;gap:10px">
+            <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D12</b> Kode koneksi</div>
+            <div style="width:300px;height:650px;border-radius:27px;overflow:hidden;position:relative;background:var(--bg);box-shadow:var(--shadow)">
+              <div style="position:absolute;inset:0;background:var(--artBg2)"></div>
+              <div style="position:absolute;left:50%;top:290px;width:420px;height:420px;transform:translate(-50%,-50%);border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 25px,var(--accentSoft) 25px 26px);-webkit-mask-image:radial-gradient(circle,#000 20%,transparent 62%);mask-image:radial-gradient(circle,#000 20%,transparent 62%)"></div>
+              <div style="position:absolute;left:50%;top:290px;width:300px;height:300px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,var(--art1),transparent 62%)"></div>
+              <div style="position:absolute;top:18px;left:20px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:#febc2e"></span><span style="width:12px;height:12px;border-radius:50%;background:#28c840"></span></div>
+              <div style="position:absolute;left:0;right:0;top:150px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:0 20px">
+                <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:22px;font-weight:500;line-height:1.2">Masukkan kode ini<br><i>di iPhone</i></div>
+              </div>
+              <div style="position:absolute;left:0;right:0;top:252px;display:flex;justify-content:center;gap:8px">
+                <span style="width:58px;height:80px;border-radius:16px;background:var(--glass);box-shadow:var(--glassShadow);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;font-size:50px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums">4</span>
+                <span style="width:58px;height:80px;border-radius:16px;background:var(--glass);box-shadow:var(--glassShadow);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;font-size:50px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums">7</span>
+                <span style="width:58px;height:80px;border-radius:16px;background:var(--glass);box-shadow:var(--glassShadow);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;font-size:50px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums">1</span>
+                <span style="width:58px;height:80px;border-radius:16px;background:var(--glass);box-shadow:var(--glassShadow);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;font-size:50px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums">9</span>
+              </div>
+              <div style="position:absolute;left:0;right:0;top:356px;display:flex;justify-content:center;gap:6px;align-items:center;font-size:12.5px;color:var(--text2)"><span style="width:12px;height:22px;border-radius:4px;border:1.5px solid var(--text2)"></span>iPhone Egie meminta koneksi</div>
+              <div style="position:absolute;left:0;right:0;bottom:40px;display:flex;justify-content:center">
+                <span style="height:30px;padding:0 20px;border-radius:15px;background:var(--fill);font-size:13px;display:flex;align-items:center">Batal</span>
+              </div>
+              <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.22;mix-blend-mode:overlay;pointer-events:none"></div>
+            </div>
+          </div>
+
+          <div style="flex:none;display:flex;flex-direction:column;gap:10px">
+            <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D13</b> Prompt koneksi</div>
+            <div style="width:300px;height:650px;border-radius:27px;overflow:hidden;position:relative;background:var(--bg);box-shadow:var(--shadow)">
+              <div style="position:absolute;inset:0;background:var(--artBg2)"></div>
+              <div style="position:absolute;left:50%;top:330px;width:300px;height:300px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,var(--art1),transparent 62%)"></div>
+              <div style="position:absolute;inset:0;background:var(--veil)"></div>
+              <div style="position:absolute;top:18px;left:20px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:#febc2e"></span><span style="width:12px;height:12px;border-radius:50%;background:#28c840"></span></div>
+              <div style="position:absolute;left:16px;right:16px;top:46px;padding:22px 18px 16px;border-radius:20px;background:var(--bg);box-shadow:0 0 0 .5px var(--sep),0 18px 40px rgba(0,0,0,.22);display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+                <div style="position:relative;width:44px;height:72px">
+                  <div style="position:absolute;inset:0;border-radius:11px;border:2px solid var(--text);background:var(--bg)"><div style="width:12px;height:3px;border-radius:2px;background:var(--text);margin:5px auto 0"></div></div>
+                  <div style="position:absolute;right:-14px;top:-8px;width:24px;height:24px;border-radius:50%;background:var(--accentBg);box-shadow:0 0 0 3px var(--bg);display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M3 6.5a7 7 0 0 1 10 0M5.2 9a4 4 0 0 1 5.6 0"></path><circle cx="8" cy="11.8" r=".9" fill="#fff"></circle></svg></div>
+                </div>
+                <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:19px;font-weight:500;line-height:1.25;text-wrap:balance"><b style="font-weight:600">iPhone Egie</b> ingin mirror ke Cermin</div>
+                <div style="font-size:12px;color:var(--text2)">Lewat Wi-Fi Kantor-5G</div>
+                <div style="display:flex;gap:8px;align-items:center;font-size:12.5px;align-self:flex-start;margin-top:2px"><span style="width:16px;height:16px;border-radius:4px;background:var(--accentBg);display:flex;align-items:center;justify-content:center"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5l2.5 2.5L12 5.5"></path></svg></span>Selalu izinkan perangkat ini</div>
+                <div style="display:flex;gap:8px;width:100%;margin-top:4px">
+                  <span style="flex:1;height:32px;border-radius:16px;background:var(--fill);font-size:13px;display:flex;align-items:center;justify-content:center">Tolak</span>
+                  <span style="flex:1;height:32px;border-radius:16px;background:var(--accentBg);color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center">Izinkan</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="{{ t.d14id }}" style="flex:none;display:flex;flex-direction:column;gap:10px;scroll-margin-top:24px">
+            <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2);display:flex;gap:8px;align-items:baseline"><span><b>D14</b> Diagnosa · interaktif</span><span onClick="{{ t.diag.reset }}" style="cursor:pointer;text-decoration:underline;opacity:.8">reset demo</span></div>
+            <div style="width:300px;height:650px;border-radius:27px;overflow:hidden;position:relative;background:var(--bg);box-shadow:{{ t.d14shadow }};transition:box-shadow 300ms;display:flex;flex-direction:column;padding:48px 18px 18px;gap:12px">
+              <div style="position:absolute;top:18px;left:20px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:#febc2e"></span><span style="width:12px;height:12px;border-radius:50%;background:#28c840"></span></div>
+              <div style="display:flex;flex-direction:column;gap:6px;padding:0 2px">
+                <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:22px;font-weight:500;line-height:1.15;letter-spacing:-.01em">Cermin tidak muncul <i>di iPhone?</i></div>
+                <div style="font-size:12.5px;line-height:1.45;color:var(--text2)">Beberapa Wi-Fi kantor memblokir AirPlay. Cara paling pasti: pakai kabel USB.</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500;color:{{ t.diag.summaryColor }};padding:0 2px"><span style="width:7px;height:7px;border-radius:50%;background:{{ t.diag.summaryColor }}"></span>{{ t.diag.summary }}</div>
+              <div style="border-radius:14px;background:var(--card);box-shadow:0 0 0 .5px var(--sep);font-size:12.5px;overflow:hidden">
+                <sc-for list="{{ t.diag.rows }}" as="r" hint-placeholder-count="4">
+                  <div style="display:flex;gap:10px;padding:10px 12px;align-items:flex-start;border-top:{{ r.border }};background:{{ r.bg }};transition:background 200ms">
+                    <sc-if value="{{ r.isOk }}" hint-placeholder-val="{{ true }}"><span style="width:18px;height:18px;border-radius:50%;background:var(--accentBg);display:flex;align-items:center;justify-content:center;flex:none"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5l2.5 2.5L12 5.5"></path></svg></span></sc-if>
+                    <sc-if value="{{ r.isBad }}" hint-placeholder-val="{{ false }}"><span style="width:18px;height:18px;border-radius:50%;background:var(--warn);color:var(--bg);display:flex;align-items:center;justify-content:center;flex:none;font-size:11px;font-weight:800">!</span></sc-if>
+                    <sc-if value="{{ r.isChecking }}" hint-placeholder-val="{{ false }}"><span style="width:18px;height:18px;border-radius:50%;border:2px solid var(--fill2);border-top-color:var(--accent);flex:none"></span></sc-if>
+                    <span style="display:flex;flex-direction:column;gap:5px;flex:1;min-width:0">
+                      <span style="display:flex;flex-direction:column;gap:1px"><b style="font-weight:500">{{ r.title }}</b><span style="color:var(--text2);font-size:11.5px">{{ r.sub }}</span></span>
+                      <sc-if value="{{ r.isBad }}" hint-placeholder-val="{{ false }}"><button onClick="{{ r.fix }}" style="align-self:flex-start;height:24px;padding:0 11px;border:0;border-radius:12px;background:var(--card);color:var(--text);box-shadow:0 0 0 .5px var(--sep),0 1px 2px rgba(0,0,0,.08);font:500 11.5px -apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer" style-hover="background:var(--fill)" style-active="transform:scale(.97)">{{ r.fixLabel }}</button></sc-if>
+                    </span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="font-size:11.5px;font-weight:600;color:var(--text3);padding:0 2px;letter-spacing:.04em">MASIH TIDAK MUNCUL?</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <span style="height:34px;border-radius:17px;background:var(--accentBg);color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center">Pakai kabel USB</span>
+                <span style="height:34px;border-radius:17px;background:var(--fill);font-size:13px;display:flex;align-items:center;justify-content:center">Pakai Personal Hotspot</span>
+              </div>
+              <button onClick="{{ t.diag.recheck }}" style="margin-top:auto;align-self:center;border:0;background:transparent;font:500 12px -apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent);cursor:pointer;padding:6px 10px;border-radius:8px" style-hover="background:var(--fill)">Periksa ulang</button>
+            </div>
+          </div>
+
+          <div style="flex:none;display:flex;flex-direction:column;gap:10px">
+            <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D15</b> Settings → Wireless</div>
+            <div style="width:600px;border-radius:18px;background:var(--bg);box-shadow:var(--shadow);overflow:hidden">
+              <div style="background:var(--bg2);border-bottom:1px solid var(--sep);padding:12px 16px 10px;position:relative">
+                <div style="position:absolute;top:14px;left:16px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:var(--fill2)"></span><span style="width:12px;height:12px;border-radius:50%;background:var(--fill2)"></span></div>
+                <div style="text-align:center;font-size:13px;font-weight:600">Wireless</div>
+              </div>
+              <div style="padding:20px;display:flex;flex-direction:column;gap:12px">
+                <div style="border-radius:12px;background:var(--card);box-shadow:0 0 0 .5px var(--sep);font-size:13px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px">Nama receiver<span style="height:24px;width:170px;padding:0 10px;border-radius:6px;background:var(--bg);box-shadow:inset 0 0 0 1px var(--sep);display:flex;align-items:center;font-size:12px">Cermin</span></div>
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--sep);gap:16px"><span>Kode koneksi</span>
+                    <span style="display:flex;flex-direction:column;gap:7px;font-size:12.5px">
+                      <span style="display:flex;gap:8px;align-items:center"><span style="width:16px;height:16px;border-radius:50%;background:var(--accentBg);display:flex;align-items:center;justify-content:center"><span style="width:6px;height:6px;border-radius:50%;background:#fff"></span></span>Kode baru tiap koneksi</span>
+                      <span style="display:flex;gap:8px;align-items:center"><span style="width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--fill2)"></span>Password tetap</span>
+                      <span style="display:flex;gap:8px;align-items:center"><span style="width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--fill2)"></span>Tanpa kode <span style="color:var(--text3)">· tidak disarankan</span></span>
+                    </span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--sep)">Utamakan USB bila keduanya tersedia<span style="width:32px;height:18px;border-radius:9px;background:var(--accentBg);position:relative"><span style="position:absolute;top:2px;left:16px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--sep)"><span>Mode langsung (P2P) <span style="font:500 10px ui-monospace,Menlo,monospace;padding:2px 6px;border-radius:999px;background:var(--fill);color:var(--text2)">EKSPERIMENTAL</span></span><span style="width:32px;height:18px;border-radius:9px;background:var(--fill2);position:relative"><span style="position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+                </div>
+                <div style="font-size:12px;font-weight:600;color:var(--text2);padding:0 4px">Perangkat Tepercaya</div>
+                <div style="border-radius:12px;background:var(--card);box-shadow:0 0 0 .5px var(--sep);font-size:13px">
+                  <div style="display:flex;align-items:center;gap:10px;padding:9px 14px"><span style="width:14px;height:24px;border-radius:4px;border:1.5px solid var(--text2);flex:none"></span><span style="flex:1">iPhone Egie <span style="color:var(--text3);font-size:12px">· terakhir 3 Nov</span></span><span style="height:22px;padding:0 10px;border-radius:11px;background:var(--fill);font-size:12px;display:flex;align-items:center">Hapus</span></div>
+                  <div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-top:1px solid var(--sep)"><span style="width:14px;height:24px;border-radius:4px;border:1.5px solid var(--text2);flex:none"></span><span style="flex:1">iPhone Demo Klinik <span style="color:var(--text3);font-size:12px">· terakhir 28 Okt</span></span><span style="height:22px;padding:0 10px;border-radius:11px;background:var(--fill);font-size:12px;display:flex;align-items:center">Hapus</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </sc-for>
+</section>
+
+<section id="d16" data-screen-label="05b QR v2-A" style="padding:32px 64px 64px;display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">
+    <span style="font:600 11px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.45)">05b · D16 · D17</span>
+    <h2 style="margin:0;font-family:ui-serif,'New York',Georgia,serif;font-size:34px;font-weight:500;letter-spacing:-.02em">QR → Safari <i>(v2-A, eksperimental)</i></h2>
+    <span style="font-size:12px;font-weight:500;padding:3px 10px;border-radius:999px;background:rgba(0,0,0,.06);color:rgba(0,0,0,.6)">Dibangun hanya bila lolos spike T4.0</span>
+  </div>
+  <div style="font-size:13px;color:rgba(0,0,0,.55);max-width:820px;line-height:1.5">Scan dengan kamera bawaan, Safari terbuka, lalu tap "Mulai Share Layar". Tanpa install, iOS 27+. Bila spike no-go, layar ini tidak dibuat: USB/AirPlay tetap jalur utama, dan v2-B (app pendamping) hanya dipakai bila AirPlay juga diblokir.</div>
+
+  <div style="display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start">
+    <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+      <div style="{{ t.vars }}">
+        <div style="position:relative;overflow:hidden;width:max-content;background:var(--wallpaper);border-radius:20px;padding:32px 36px 44px;display:flex;gap:36px;color:var(--text)">
+          <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.3;mix-blend-mode:overlay;pointer-events:none"></div>
+
+          <div style="position:relative;flex:none;display:flex;flex-direction:column;gap:10px">
+            <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D16</b> QR siap · {{ t.name }}</div>
+            <div style="width:300px;height:650px;border-radius:27px;overflow:hidden;position:relative;background:var(--bg);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;padding:48px 22px 22px;gap:16px;text-align:center">
+              <div style="position:absolute;top:18px;left:20px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:#febc2e"></span><span style="width:12px;height:12px;border-radius:50%;background:#28c840"></span></div>
+              <span style="font:500 10.5px ui-monospace,Menlo,monospace;letter-spacing:.06em;padding:3px 9px;border-radius:999px;background:var(--fill);color:var(--text2)">EKSPERIMENTAL · iOS 27+</span>
+              <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:24px;font-weight:500;line-height:1.15;letter-spacing:-.01em">Scan dengan<br><i>kamera iPhone</i></div>
+              <div style="position:relative;width:220px;height:220px;margin-top:4px">
+                <div style="position:absolute;inset:-30px;border-radius:50%;background:radial-gradient(circle,var(--art1),transparent 65%)"></div>
+                <div style="position:absolute;inset:0;border-radius:22px;background:#fff;box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 12px 30px rgba(0,0,0,.14)">
+                  <div style="position:absolute;inset:18px;background:repeating-linear-gradient(90deg,rgba(0,0,0,.07) 0 7px,transparent 7px 14px),repeating-linear-gradient(0deg,rgba(0,0,0,.07) 0 7px,transparent 7px 14px)"></div>
+                  <div style="position:absolute;left:18px;top:18px;width:46px;height:46px;border:7px solid #141414;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center"><span style="width:16px;height:16px;border-radius:4px;background:#141414"></span></div>
+                  <div style="position:absolute;right:18px;top:18px;width:46px;height:46px;border:7px solid #141414;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center"><span style="width:16px;height:16px;border-radius:4px;background:#141414"></span></div>
+                  <div style="position:absolute;left:18px;bottom:18px;width:46px;height:46px;border:7px solid #141414;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center"><span style="width:16px;height:16px;border-radius:4px;background:#141414"></span></div>
+                  <div style="position:absolute;left:50%;top:50%;width:42px;height:42px;transform:translate(-50%,-50%);border-radius:22.37%;background:{{ iconBg }};box-shadow:0 0 0 4px #fff;overflow:hidden">
+                    <div style="position:absolute;left:23%;top:20%;width:25%;height:60%;border-radius:2px;background:#fff"></div>
+                    <div style="position:absolute;left:52%;top:20%;width:25%;height:60%;border-radius:2px;background:rgba(255,255,255,.45)"></div>
+                  </div>
+                  <span style="position:absolute;right:20px;bottom:24px;font:500 9px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.45);background:#fff;padding:2px 4px">QR · URL + token</span>
+                </div>
+              </div>
+              <div style="width:220px;display:flex;flex-direction:column;gap:6px;margin-top:6px">
+                <div style="height:3px;border-radius:2px;background:var(--fill2);overflow:hidden"><div style="width:70%;height:100%;background:var(--accent)"></div></div>
+                <div style="font-size:11.5px;color:var(--text2)">Berlaku 1:24 · diperbarui otomatis</div>
+              </div>
+              <div style="font-size:12.5px;line-height:1.45;color:var(--text2);text-wrap:pretty">Buka Kamera, arahkan ke kode, lalu ketuk tautan Safari. Tidak perlu install apa pun.</div>
+              <div style="margin-top:auto;display:flex;flex-direction:column;gap:4px;align-items:center">
+                <span style="font-size:12px;font-weight:500;color:var(--accent)">Pakai AirPlay saja</span>
+                <span style="font-size:11px;color:var(--text3)">iPhone &amp; Mac harus di Wi-Fi yang sama</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="position:relative;flex:none;display:flex;flex-direction:column;gap:10px">
+            <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D16</b> Terscan · menunggu share</div>
+            <div style="width:300px;height:650px;border-radius:27px;overflow:hidden;position:relative;background:var(--bg);box-shadow:var(--shadow)">
+              <div style="position:absolute;top:18px;left:20px;display:flex;gap:8px;z-index:2"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></span><span style="width:12px;height:12px;border-radius:50%;background:#febc2e"></span><span style="width:12px;height:12px;border-radius:50%;background:#28c840"></span></div>
+              <div style="position:absolute;inset:0;background:var(--artBg2)"></div>
+              <div style="position:absolute;left:50%;top:300px;width:280px;height:280px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,var(--art1),transparent 62%)"></div>
+              <div style="position:absolute;left:0;right:0;top:362px;height:1px;background:var(--horizon)"></div>
+              <div style="position:absolute;left:50%;top:238px;width:62px;height:124px;margin-left:-31px;border-radius:15px;border:2px solid var(--text);background:var(--bg)"><div style="width:16px;height:4px;border-radius:2px;background:var(--text);margin:6px auto 0"></div></div>
+              <div style="position:absolute;left:calc(50% + 18px);top:224px;width:28px;height:28px;border-radius:50%;background:var(--accentBg);box-shadow:0 0 0 3px var(--bg);display:flex;align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5l2.5 2.5L12 5.5"></path></svg></div>
+              <div style="position:absolute;left:50%;top:363px;width:62px;height:124px;margin-left:-31px;border-radius:15px;border:2px solid var(--text);opacity:.2;-webkit-mask-image:linear-gradient(180deg,#000,transparent 50%);mask-image:linear-gradient(180deg,#000,transparent 50%)"></div>
+              <div style="position:absolute;left:20px;right:20px;bottom:56px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">
+                <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:20px;font-weight:500">iPhone Egie membuka halaman</div>
+                <div style="font-size:12.5px;line-height:1.45;color:var(--text2)">Menunggu kamu tap <b style="color:var(--text)">Mulai Share Layar</b> di Safari…</div>
+                <span style="margin-top:10px;height:26px;padding:0 14px;border-radius:13px;background:var(--fill);font-size:12px;display:flex;align-items:center">Batal</span>
+              </div>
+              <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.22;mix-blend-mode:overlay;pointer-events:none"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="{{ lightVars }}">
+    <div style="position:relative;overflow:hidden;width:max-content;background:var(--wallpaper);border-radius:20px;padding:32px 36px 44px;display:flex;flex-direction:column;gap:16px;color:var(--text)">
+      <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.3;mix-blend-mode:overlay;pointer-events:none"></div>
+      <div style="position:relative;font:600 11px ui-monospace,Menlo,monospace;color:var(--text2);letter-spacing:.12em">D17 · HALAMAN SENDER DI SAFARI iPHONE (WEB MOBILE)</div>
+      <div style="position:relative;display:flex;gap:40px;align-items:flex-start">
+
+        <div style="flex:none;display:flex;flex-direction:column;gap:10px">
+          <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D17</b> Siap</div>
+          <div style="width:390px;height:844px;border-radius:58px;background:#0c0c0d;padding:11px;box-shadow:0 30px 70px rgba(0,0,0,.28)">
+            <div style="width:100%;height:100%;border-radius:47px;overflow:hidden;position:relative;background:#f6f6f4;display:flex;flex-direction:column;color:#111">
+              <div style="height:300px;flex:none;position:relative;overflow:hidden;background:var(--wallpaper)">
+                <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.35;mix-blend-mode:overlay"></div>
+                <div style="position:absolute;left:0;right:0;top:210px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),transparent)"></div>
+                <div style="position:absolute;left:112px;top:92px;width:54px;height:118px;border-radius:13px;background:#fff;box-shadow:0 10px 26px rgba(0,0,0,.18)"></div>
+                <div style="position:absolute;left:176px;top:92px;width:90px;height:66px;border-radius:9px;background:linear-gradient(90deg,rgba(255,255,255,.7),rgba(255,255,255,.15));box-shadow:inset 0 0 0 1px rgba(255,255,255,.6)"></div>
+                <div style="position:absolute;left:112px;top:211px;width:54px;height:118px;border-radius:13px;background:#fff;opacity:.3;-webkit-mask-image:linear-gradient(180deg,#000,transparent 55%);mask-image:linear-gradient(180deg,#000,transparent 55%)"></div>
+                <div style="position:absolute;left:0;right:0;top:0;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 34px 0 40px;font-size:16px;font-weight:600"><span>9:41</span><span style="display:flex;gap:6px;align-items:center;font-size:13px">5G<span style="width:24px;height:12px;border-radius:3px;border:1.5px solid #111;padding:1px"><span style="display:block;width:70%;height:100%;background:#111;border-radius:1px"></span></span></span></div>
+                <div style="position:absolute;top:11px;left:50%;width:122px;height:35px;margin-left:-61px;border-radius:20px;background:#000"></div>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;padding:26px 26px 110px;gap:12px">
+                <div style="font:500 11px ui-monospace,Menlo,monospace;letter-spacing:.12em;color:rgba(0,0,0,.4)">CERMIN</div>
+                <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:34px;font-weight:500;line-height:1.05;letter-spacing:-.02em">Mirror ke<br><i>Mac Egie</i></div>
+                <div style="font-size:15px;line-height:1.45;color:rgba(0,0,0,.58)">Layar iPhone tampil di jendela Cermin. iPhone tetap bisa dipakai seperti biasa.</div>
+                <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px">
+                  <span style="height:56px;border-radius:28px;background:var(--accentBg);color:#fff;font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center">Mulai Share Layar</span>
+                  <span style="font-size:12.5px;line-height:1.4;color:rgba(0,0,0,.5);text-align:center">iOS akan bertanya apa yang dibagikan. Pilih seluruh layar.</span>
+                </div>
+              </div>
+              <div style="position:absolute;left:0;right:0;bottom:0;padding:10px 16px 30px;display:flex;justify-content:center">
+                <span style="height:46px;width:100%;border-radius:23px;background:rgba(255,255,255,.72);backdrop-filter:blur(20px);box-shadow:inset 0 1px 0 #fff,0 0 0 .5px rgba(0,0,0,.1),0 6px 20px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;font-size:15px;color:rgba(0,0,0,.75)">192.168.1.24</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:none;display:flex;flex-direction:column;gap:10px">
+          <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D17</b> Sedang share</div>
+          <div style="width:390px;height:844px;border-radius:58px;background:#0c0c0d;padding:11px;box-shadow:0 30px 70px rgba(0,0,0,.28)">
+            <div style="width:100%;height:100%;border-radius:47px;overflow:hidden;position:relative;background:#f6f6f4;display:flex;flex-direction:column;color:#111">
+              <div style="height:54px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 34px 0 40px;font-size:16px;font-weight:600"><span>9:41</span><span style="display:flex;gap:6px;align-items:center;font-size:13px">5G<span style="width:24px;height:12px;border-radius:3px;border:1.5px solid #111;padding:1px"><span style="display:block;width:70%;height:100%;background:#111;border-radius:1px"></span></span></span></div>
+              <div style="position:absolute;top:11px;left:50%;width:122px;height:35px;margin-left:-61px;border-radius:20px;background:#000"></div>
+              <div style="flex:1;display:flex;flex-direction:column;padding:28px 26px 110px;gap:18px">
+                <div style="font:500 11px ui-monospace,Menlo,monospace;letter-spacing:.12em;color:rgba(0,0,0,.4)">CERMIN · MAC EGIE</div>
+                <div style="position:relative;height:250px;border-radius:28px;overflow:hidden;background:var(--wallpaper);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+                  <div style="position:absolute;inset:0;background-image:var(--grain);opacity:.35;mix-blend-mode:overlay"></div>
+                  <div style="position:absolute;left:50%;top:50%;width:200px;height:200px;transform:translate(-50%,-50%);border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 19px,rgba(255,255,255,.6) 19px 20px);-webkit-mask-image:radial-gradient(circle,#000 25%,transparent 70%);mask-image:radial-gradient(circle,#000 25%,transparent 70%)"></div>
+                  <span style="position:relative;width:14px;height:14px;border-radius:50%;background:var(--accentBg);box-shadow:0 0 0 6px rgba(255,255,255,.7)"></span>
+                  <div style="position:relative;font-family:ui-serif,'New York',Georgia,serif;font-size:28px;font-weight:500;margin-top:8px">Tersambung</div>
+                  <div style="position:relative;font-size:14px;color:rgba(0,0,0,.6)">30 fps · Wi-Fi Kantor-5G</div>
+                </div>
+                <div style="font-size:15px;line-height:1.45;color:rgba(0,0,0,.6)">Sekarang buka app lain. Layar tetap terkirim ke Mac sampai kamu menekan Stop.</div>
+                <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px">
+                  <span style="height:56px;border-radius:28px;background:#1d1d1f;color:#fff;font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center">Stop</span>
+                </div>
+              </div>
+              <div style="position:absolute;left:0;right:0;bottom:0;padding:10px 16px 30px;display:flex;justify-content:center">
+                <span style="height:46px;width:100%;border-radius:23px;background:rgba(255,255,255,.72);backdrop-filter:blur(20px);box-shadow:inset 0 1px 0 #fff,0 0 0 .5px rgba(0,0,0,.1),0 6px 20px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;font-size:15px;color:rgba(0,0,0,.75)">192.168.1.24</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:none;display:flex;flex-direction:column;gap:10px">
+          <div style="font:11px ui-monospace,Menlo,monospace;color:var(--text2)"><b>D17</b> iOS &lt; 27 · tidak didukung</div>
+          <div style="width:390px;height:844px;border-radius:58px;background:#0c0c0d;padding:11px;box-shadow:0 30px 70px rgba(0,0,0,.28)">
+            <div style="width:100%;height:100%;border-radius:47px;overflow:hidden;position:relative;background:#f6f6f4;display:flex;flex-direction:column;color:#111">
+              <div style="height:54px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 34px 0 40px;font-size:16px;font-weight:600"><span>9:41</span><span style="display:flex;gap:6px;align-items:center;font-size:13px">5G<span style="width:24px;height:12px;border-radius:3px;border:1.5px solid #111;padding:1px"><span style="display:block;width:70%;height:100%;background:#111;border-radius:1px"></span></span></span></div>
+              <div style="position:absolute;top:11px;left:50%;width:122px;height:35px;margin-left:-61px;border-radius:20px;background:#000"></div>
+              <div style="flex:1;display:flex;flex-direction:column;padding:28px 26px 110px;gap:16px">
+                <div style="font:500 11px ui-monospace,Menlo,monospace;letter-spacing:.12em;color:rgba(0,0,0,.4)">CERMIN</div>
+                <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:30px;font-weight:500;line-height:1.1;letter-spacing:-.02em">Browser ini belum mendukung <i>share layar</i></div>
+                <div style="font-size:15px;line-height:1.45;color:rgba(0,0,0,.6)">Perlu iOS 27 atau lebih baru. Untuk sekarang, pakai AirPlay:</div>
+                <div style="border-radius:18px;background:#fff;box-shadow:0 0 0 .5px rgba(0,0,0,.1);font-size:15px">
+                  <div style="display:flex;gap:12px;align-items:center;padding:14px 16px"><span style="width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-family:ui-serif,'New York',Georgia,serif;font-size:14px;flex:none">1</span>Buka Control Center</div>
+                  <div style="display:flex;gap:12px;align-items:center;padding:14px 16px;border-top:1px solid rgba(0,0,0,.08)"><span style="width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-family:ui-serif,'New York',Georgia,serif;font-size:14px;flex:none">2</span>Ketuk Screen Mirroring</div>
+                  <div style="display:flex;gap:12px;align-items:center;padding:14px 16px;border-top:1px solid rgba(0,0,0,.08)"><span style="width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-family:ui-serif,'New York',Georgia,serif;font-size:14px;flex:none">3</span><span>Pilih <b>Cermin</b></span></div>
+                </div>
+                <div style="margin-top:auto;font-size:13px;line-height:1.45;color:rgba(0,0,0,.5);text-align:center">Atau colokkan kabel USB. Ini cara paling pasti.</div>
+              </div>
+              <div style="position:absolute;left:0;right:0;bottom:0;padding:10px 16px 30px;display:flex;justify-content:center">
+                <span style="height:46px;width:100%;border-radius:23px;background:rgba(255,255,255,.72);backdrop-filter:blur(20px);box-shadow:inset 0 1px 0 #fff,0 0 0 .5px rgba(0,0,0,.1),0 6px 20px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;font-size:15px;color:rgba(0,0,0,.75)">192.168.1.24</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:none;width:300px;display:flex;flex-direction:column;gap:12px;font-size:12.5px;line-height:1.55;color:var(--text2);padding-top:26px">
+          <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:20px;font-weight:500;color:var(--text)">Catatan D17</div>
+          <div>• Teks status "Sekarang buka app lain" hanya dipakai bila syarat T4.0 no. 2 lolos (capture tetap jalan di luar Safari).</div>
+          <div>• Tombol 56pt (≥44pt). Stop sengaja tidak merah, karena layar iPhone ini ikut tampil di meeting.</div>
+          <div>• URL bar memperlihatkan alamat LAN. Bila memakai opsi HTTPS (b) domain publik, ganti dengan domain tersebut.</div>
+          <div>• Token kedaluwarsa → halaman menampilkan "Kode QR sudah kedaluwarsa. Scan ulang dari Mac."</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="icons" data-screen-label="06 Ikon" style="padding:32px 64px 64px;display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;align-items:baseline;gap:14px">
+    <span style="font:600 11px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.45)">06</span>
+    <h2 style="margin:0;font-family:ui-serif,'New York',Georgia,serif;font-size:34px;font-weight:500;letter-spacing:-.02em">Ikon app &amp; menu bar</h2>
+    <span style="font-size:13px;color:rgba(0,0,0,.5)">Tidak berubah dari v1</span>
+  </div>
+  <div style="display:flex;gap:48px;flex-wrap:wrap;align-items:flex-end">
+    <div style="display:flex;flex-direction:column;gap:12px;align-items:center">
+      <div style="width:256px;height:256px;border-radius:22.37%;background:{{ iconBg }};position:relative;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.3)">
+        <div style="position:absolute;left:23%;top:20%;width:25%;height:60%;border-radius:22%/10%;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.2)"></div>
+        <div style="position:absolute;left:52%;top:20%;width:25%;height:60%;border-radius:22%/10%;background:linear-gradient(90deg,rgba(255,255,255,.6),rgba(255,255,255,.06))"></div>
+        <div style="position:absolute;left:50%;top:12%;width:1.5px;height:76%;background:rgba(255,255,255,.45)"></div>
+      </div>
+      <div style="font:11px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.5)">1024 px (ditampilkan 256)</div>
+    </div>
+    <div style="display:flex;gap:28px;align-items:flex-end">
+      <div style="width:128px;height:128px;border-radius:22.37%;background:{{ iconBg }};position:relative;overflow:hidden;box-shadow:0 6px 16px rgba(0,0,0,.2)"><div style="position:absolute;left:23%;top:20%;width:25%;height:60%;border-radius:22%/10%;background:#fff"></div><div style="position:absolute;left:52%;top:20%;width:25%;height:60%;border-radius:22%/10%;background:linear-gradient(90deg,rgba(255,255,255,.6),rgba(255,255,255,.06))"></div></div>
+      <div style="width:64px;height:64px;border-radius:22.37%;background:{{ iconBg }};position:relative;overflow:hidden;box-shadow:0 3px 8px rgba(0,0,0,.2)"><div style="position:absolute;left:23%;top:20%;width:25%;height:60%;border-radius:22%/10%;background:#fff"></div><div style="position:absolute;left:52%;top:20%;width:25%;height:60%;border-radius:22%/10%;background:linear-gradient(90deg,rgba(255,255,255,.6),rgba(255,255,255,.06))"></div></div>
+      <div style="width:32px;height:32px;border-radius:22.37%;background:{{ iconBg }};position:relative;overflow:hidden"><div style="position:absolute;left:23%;top:20%;width:25%;height:60%;border-radius:2px;background:#fff"></div><div style="position:absolute;left:52%;top:20%;width:25%;height:60%;border-radius:2px;background:rgba(255,255,255,.45)"></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;gap:20px;align-items:flex-end">
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
+          <div style="width:72px;height:72px;border-radius:8px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center"><svg width="72" height="72" viewBox="0 0 18 18" fill="none" stroke="#1d1d1f" stroke-width="1.5" stroke-linecap="round"><rect x="5" y="2" width="8" height="14" rx="2.2"></rect><path d="M7.7 4.2h2.6"></path></svg></div>
+          <span style="font:10.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.5)">normal · 18pt @4×</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
+          <div style="width:72px;height:72px;border-radius:8px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center"><svg width="72" height="72" viewBox="0 0 18 18" fill="none" stroke="#1d1d1f" stroke-width="1.5" stroke-linecap="round"><rect x="5" y="2" width="8" height="14" rx="2.2"></rect><path d="M2.5 15.5l13-13"></path></svg></div>
+          <span style="font:10.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.5)">curtain · 18pt @4×</span>
+        </div>
+      </div>
+      <span style="font:10.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.5)">ukuran asli 16pt · template image (isTemplate = true)</span>
+    </div>
+  </div>
+</section>
+
+<section id="spec" data-screen-label="07 Spesifikasi" style="padding:32px 64px 96px;display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;align-items:baseline;gap:14px">
+    <span style="font:600 11px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.45)">07</span>
+    <h2 style="margin:0;font-family:ui-serif,'New York',Georgia,serif;font-size:34px;font-weight:500;letter-spacing:-.02em">Spesifikasi &amp; catatan SwiftUI</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,420px));gap:20px">
+
+    <div style="background:#fff;border-radius:16px;padding:22px;box-shadow:0 0 0 1px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:12px;font-size:12px;line-height:1.55;color:rgba(0,0,0,.7)">
+      <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:20px;font-weight:500;color:#1d1d1f">Kaca</div>
+      <div><b>Toolbar</b>: kapsul 38pt, radius 19, padding 5, tombol bulat 30pt, ikon 15pt. Material <code>.ultraThinMaterial</code> + stroke dalam 0.5pt putih 50% + highlight 1pt di tepi atas. Di macOS 26+ boleh pakai <code>.glassEffect(.regular, in: .capsule)</code>.</div>
+      <div><b>Pill &amp; toast</b>: material yang sama, kapsul penuh. Pill punya titik accent 6pt sebagai indikator live.</div>
+      <div><b>Curtain</b>: cincin konsentris 1pt (opasitas 4%) yang memudar ke tepi. Tetap netral, swap ≤100 ms.</div>
+    </div>
+
+    <div style="background:#fff;border-radius:16px;padding:22px;box-shadow:0 0 0 1px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:12px;font-size:12px;line-height:1.55;color:rgba(0,0,0,.7)">
+      <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:20px;font-weight:500;color:#1d1d1f">Pantulan <i>(art)</i></div>
+      <div style="display:flex;gap:8px">
+        <span style="width:36px;height:36px;border-radius:50%;background:{{ art1 }}"></span>
+        <span style="width:36px;height:36px;border-radius:50%;background:{{ art2 }}"></span>
+        <span style="width:36px;height:36px;border-radius:50%;background:{{ accentLight }}"></span>
+      </div>
+      <div>Orb accent dan pasir memiliki lightness/chroma sama, hanya hue yang berbeda. Cakrawala ada di 62% tinggi; pantulan = elemen dibalik, opasitas 22–28%, mask gradien 50–55%. Grain noise 30% overlay.</div>
+      <div>Ilustrasi diekspor sebagai aset (PDF vektor/PNG @2x) per state: D2, D3, D10, onboarding 1–3, serta light &amp; dark.</div>
+    </div>
+
+    <div style="background:#fff;border-radius:16px;padding:22px;box-shadow:0 0 0 1px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:6px;color:#1d1d1f">
+      <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:20px;font-weight:500;margin-bottom:6px">Tipografi</div>
+      <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:34px;font-weight:500;letter-spacing:-.02em;line-height:1.1">New York 34 <i>italic</i></div>
+      <div style="font-size:11px;color:rgba(0,0,0,.5)">Judul onboarding · <code>.font(.system(size:34, design:.serif))</code></div>
+      <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:24px;font-weight:500;margin-top:6px">New York 24 / 20</div>
+      <div style="font-size:11px;color:rgba(0,0,0,.5)">Empty state, curtain, terputus</div>
+      <div style="font-size:13px;margin-top:6px">SF Pro 13 — body &amp; kontrol</div>
+      <div style="font-size:11px;font-weight:500">SF Pro 11 medium — pill, caption</div>
+    </div>
+
+    <div style="background:#fff;border-radius:16px;padding:22px;box-shadow:0 0 0 1px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:8px;font-size:12px;color:rgba(0,0,0,.7);grid-column:span 2">
+      <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:20px;font-weight:500;color:#1d1d1f">SF Symbols</div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 20px;font:12px/1.7 ui-monospace,Menlo,monospace;color:#1d1d1f">
+        <div>pin / pin.fill <span style="color:rgba(0,0,0,.45)">— on top</span></div>
+        <div>camera.viewfinder <span style="color:rgba(0,0,0,.45)">— screenshot</span></div>
+        <div>eye.slash <span style="color:rgba(0,0,0,.45)">— curtain</span></div>
+        <div>speaker.wave.2 / speaker.slash</div>
+        <div>arrow.up.left.and.arrow.down.right</div>
+        <div>gearshape <span style="color:rgba(0,0,0,.45)">— settings</span></div>
+        <div>iphone / iphone.slash <span style="color:rgba(0,0,0,.45)">— menu bar</span></div>
+        <div>cable.connector <span style="color:rgba(0,0,0,.45)">— D2</span></div>
+        <div>airplayvideo <span style="color:rgba(0,0,0,.45)">— D10</span></div>
+      </div>
+    </div>
+
+    <div style="background:#141618;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:8px;color:rgba(255,255,255,.85)">
+      <div style="font-family:ui-serif,'New York',Georgia,serif;font-size:20px;font-weight:500;color:#fff">SwiftUI / AppKit</div>
+      <div style="font:11.5px/1.65 ui-monospace,Menlo,monospace;white-space:pre-wrap">window.collectionBehavior
+  .insert(.fullScreenNone)
+window.contentAspectRatio = size
+window.level = pinned ? .floating : .normal
+// toolbar kaca
+HStack { … }
+  .padding(.horizontal, 5)
+  .frame(height: 38)
+  .background(.ultraThinMaterial,
+     in: .capsule)
+  .overlay(Capsule()
+     .strokeBorder(.white.opacity(0.5),
+        lineWidth: 0.5))
+Text("Colokkan iPhone kamu")
+  .font(.system(.title, design: .serif))</div>
+    </div>
+
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Light&quot;,&quot;Dark&quot;],&quot;default&quot;:&quot;Light&quot;,&quot;tsType&quot;:&quot;'Light'|'Dark'&quot;,&quot;section&quot;:&quot;Prototipe&quot;},&quot;screenCorners&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototipe&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Teal&quot;,&quot;Biru&quot;,&quot;Hijau&quot;],&quot;default&quot;:&quot;Teal&quot;,&quot;tsType&quot;:&quot;'Teal'|'Biru'|'Hijau'&quot;,&quot;section&quot;:&quot;Warna&quot;}}">
+class Component extends DCLogic {
+  state = { hover: false, pinned: true, curtain: false, audio: false, size: '75%', sizeOpen: false, toast: false, pill: false, front: 'mirror', tabs: ['umum', 'shortcut'], d14hl: -1, diag: [{ wifi: 'ok', lan: 'ok', fw: 'bad', ap: 'bad' }, { wifi: 'ok', lan: 'ok', fw: 'bad', ap: 'bad' }] };
+
+  componentDidMount() {
+    this.onKey = (e) => {
+      const k = (e.key || '').toLowerCase();
+      if (e.ctrlKey && e.altKey && e.metaKey && (k === 'p' || e.code === 'KeyP')) { e.preventDefault(); this.toggleCurtain(); return; }
+      if (e.metaKey && !e.ctrlKey && !e.altKey) {
+        if (k === 's') { e.preventDefault(); this.shoot(); }
+        else if (k === 't') { e.preventDefault(); this.setState(s => ({ pinned: !s.pinned })); }
+        else if (['1','2','3','4'].includes(k)) { e.preventDefault(); this.setSize(['50%','75%','100%','Fit'][+k - 1]); }
+      }
+    };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { window.removeEventListener('keydown', this.onKey); clearTimeout(this.pt); clearTimeout(this.tt); clearTimeout(this.ht); }
+
+  hue() { return { Teal: 195, Biru: 245, Hijau: 165 }[this.props.accent ?? 'Teal'] ?? 195; }
+  vars(dark) {
+    const h = this.hue();
+    const grain = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")`;
+    if (dark) return {
+      '--bg': '#242427', '--bg2': '#2a2a2d', '--card': '#313134', '--text': 'rgba(255,255,255,.9)', '--text2': 'rgba(255,255,255,.6)', '--text3': 'rgba(255,255,255,.36)',
+      '--sep': 'rgba(255,255,255,.1)', '--fill': 'rgba(255,255,255,.08)', '--fill2': 'rgba(255,255,255,.18)',
+      '--glass': 'rgba(48,48,52,.55)', '--glassShadow': 'inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 0 .5px rgba(255,255,255,.1),0 0 0 .5px rgba(0,0,0,.5),0 10px 28px rgba(0,0,0,.4)',
+      '--menu': 'rgba(40,40,44,.82)', '--menubar': 'rgba(20,22,26,.5)',
+      '--wallpaper': `radial-gradient(38% 34% at 26% 40%, oklch(0.44 0.08 ${h} / .9), transparent 70%), radial-gradient(30% 30% at 72% 34%, oklch(0.44 0.07 50 / .75), transparent 70%), radial-gradient(26% 20% at 26% 84%, oklch(0.42 0.08 ${h} / .35), transparent 70%), radial-gradient(22% 18% at 72% 88%, oklch(0.42 0.07 50 / .3), transparent 70%), linear-gradient(180deg, #14171b 0%, #0f1114 62%, #1c2024 62.2%, #0d0f11 100%)`,
+      '--artBg': 'linear-gradient(180deg,#2e2f33 0%,#28292d 68%,#212226 68.3%,#2a2b2f 100%)',
+      '--artBg2': 'linear-gradient(180deg,#26272a 0%,#242528 56%,#1f2023 56.1%,#252629 100%)',
+      '--art1': `oklch(0.5 0.08 ${h} / .6)`, '--art2': 'oklch(0.5 0.07 50 / .45)', '--horizon': 'linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent)',
+      '--curtain': '#1d1e20', '--ring': 'rgba(255,255,255,.045)', '--ring2': 'rgba(255,255,255,.12)', '--veil': 'rgba(22,22,24,.5)',
+      '--shadow': '0 0 0 .5px rgba(255,255,255,.14),0 0 0 1px rgba(0,0,0,.6),0 24px 60px rgba(0,0,0,.55)',
+      '--warnBg': 'rgba(240,180,76,.13)', '--warn': '#f0b44c', '--grain': grain,
+      '--accent': `oklch(0.76 0.1 ${h})`, '--accentBg': `oklch(0.56 0.1 ${h})`, '--accentSoft': `oklch(0.7 0.1 ${h} / .25)`
+    };
+    return {
+      '--bg': '#efefed', '--bg2': '#f5f5f3', '--card': '#ffffff', '--text': 'rgba(0,0,0,.86)', '--text2': 'rgba(0,0,0,.56)', '--text3': 'rgba(0,0,0,.36)',
+      '--sep': 'rgba(0,0,0,.09)', '--fill': 'rgba(0,0,0,.05)', '--fill2': 'rgba(0,0,0,.14)',
+      '--glass': 'rgba(255,255,255,.58)', '--glassShadow': 'inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 .5px rgba(255,255,255,.6),0 0 0 .5px rgba(0,0,0,.12),0 10px 28px rgba(0,0,0,.15)',
+      '--menu': 'rgba(250,250,248,.8)', '--menubar': 'rgba(255,255,255,.4)',
+      '--wallpaper': `radial-gradient(38% 34% at 26% 40%, oklch(0.84 0.07 ${h} / .95), transparent 70%), radial-gradient(30% 30% at 72% 34%, oklch(0.87 0.06 60 / .9), transparent 70%), radial-gradient(26% 20% at 26% 84%, oklch(0.84 0.07 ${h} / .4), transparent 70%), radial-gradient(22% 18% at 72% 88%, oklch(0.87 0.06 60 / .35), transparent 70%), linear-gradient(180deg, #f3f2ef 0%, #e4e6e7 62%, #d8dcdf 62.2%, #e9eaea 100%)`,
+      '--artBg': 'linear-gradient(180deg,#f7f7f5 0%,#eeefee 68%,#e5e7e8 68.3%,#f1f2f1 100%)',
+      '--artBg2': 'linear-gradient(180deg,#f3f3f1 0%,#eeeeec 56%,#e6e8e8 56.1%,#f0f0ee 100%)',
+      '--art1': `oklch(0.84 0.07 ${h} / .85)`, '--art2': 'oklch(0.87 0.06 60 / .8)', '--horizon': 'linear-gradient(90deg,transparent,rgba(0,0,0,.18),transparent)',
+      '--curtain': '#e9e9e7', '--ring': 'rgba(0,0,0,.04)', '--ring2': 'rgba(255,255,255,.5)', '--veil': 'rgba(240,240,238,.45)',
+      '--shadow': '0 0 0 .5px rgba(0,0,0,.18),0 24px 60px rgba(30,40,50,.22)',
+      '--warnBg': 'rgba(255,170,0,.13)', '--warn': '#8a5600', '--grain': grain,
+      '--accent': `oklch(0.55 0.1 ${h})`, '--accentBg': `oklch(0.55 0.1 ${h})`, '--accentSoft': `oklch(0.55 0.1 ${h} / .18)`
+    };
+  }
+
+  diagInit() { return { wifi: 'ok', lan: 'ok', fw: 'bad', ap: 'bad' }; }
+  setDiag(i, patch) { this.setState(st => { const diag = [...st.diag]; diag[i] = { ...diag[i], ...patch }; return { diag }; }); }
+  diagVals(i) {
+    const st = this.state.diag[i];
+    const defs = [
+      ['wifi', 'Wi-Fi sama?', 'Mac di Kantor-5G, pastikan iPhone juga', 'Mac tidak terhubung ke Wi-Fi', 'Buka Wi-Fi'],
+      ['lan', 'Izin Local Network', 'Diizinkan', 'Belum diizinkan', 'Buka Pengaturan'],
+      ['fw', 'Firewall', 'Koneksi masuk diizinkan', 'Koneksi masuk ke Cermin diblokir', 'Izinkan koneksi masuk'],
+      ['ap', 'AirPlay Receiver bawaan', 'Nonaktif', 'Masih aktif, bentrok port 7000', 'Matikan']
+    ];
+    const checking = Object.values(st).includes('checking');
+    const bad = Object.values(st).filter(v => v === 'bad').length;
+    return {
+      summary: checking ? 'Memeriksa…' : bad ? `${bad} masalah ditemukan` : 'Semua beres. Coba lagi dari Control Center.',
+      summaryColor: checking ? 'var(--text2)' : bad ? 'var(--warn)' : 'var(--accent)',
+      rows: defs.map(([k, title, ok, badText, fixLabel], j) => ({
+        title, fixLabel,
+        sub: st[k] === 'checking' ? 'Memeriksa…' : st[k] === 'bad' ? badText : ok,
+        isOk: st[k] === 'ok', isBad: st[k] === 'bad', isChecking: st[k] === 'checking',
+        border: j ? '1px solid var(--sep)' : '0', bg: st[k] === 'bad' ? 'var(--warnBg)' : 'transparent',
+        fix: () => { this.setDiag(i, { [k]: 'checking' }); setTimeout(() => this.setDiag(i, { [k]: 'ok' }), 800); }
+      })),
+      recheck: () => {
+        const prev = { ...this.state.diag[i] };
+        Object.keys(prev).forEach(k => { if (prev[k] === 'checking') prev[k] = 'ok'; });
+        this.setDiag(i, { wifi: 'checking', lan: 'checking', fw: 'checking', ap: 'checking' });
+        setTimeout(() => this.setDiag(i, prev), 900);
+      },
+      reset: () => this.setDiag(i, this.diagInit())
+    };
+  }
+
+  flashPill() { this.setState({ pill: true }); clearTimeout(this.pt); this.pt = setTimeout(() => this.setState({ pill: false }), 2000); }
+  shoot() {
+    if (this.state.curtain) return;
+    this.setState({ toast: true, pill: false }); clearTimeout(this.tt);
+    this.tt = setTimeout(() => this.setState({ toast: false }), 1500);
+  }
+  toggleCurtain() { this.setState(s => ({ curtain: !s.curtain, pill: false })); }
+  setSize(size) { this.setState({ size, sizeOpen: false }); this.flashPill(); }
+
+  renderVals() {
+    const s = this.state;
+    const dark = (this.props.theme ?? 'Light') === 'Dark';
+    const screenCorners = this.props.screenCorners ?? true;
+    const hm = { '50%': 361, '75%': 541, '100%': 721, 'Fit': 744 };
+    const winH = hm[s.size], winW = Math.round(winH * 1179 / 2556);
+    const show = s.hover || s.sizeOpen;
+    const h = this.hue();
+    const tabDefs = [['umum','Umum','u'],['tampilan','Tampilan','t'],['audio','Audio','a'],['shortcut','Shortcut','⌘'],['wireless','Wireless','w'],['tentang','Tentang','i']];
+    return {
+      heroVars: this.vars(dark), lightVars: this.vars(false),
+      protoVars: this.vars(dark),
+      iconBg: `linear-gradient(165deg, oklch(0.74 0.09 ${h}), oklch(0.48 0.1 ${h + 12}))`,
+      accentLight: `oklch(0.55 0.1 ${h})`, art1: `oklch(0.84 0.07 ${h})`, art2: 'oklch(0.87 0.06 60)',
+      curtain: s.curtain, notCurtain: !s.curtain, audio: s.audio, notAudio: !s.audio,
+      winH, winW, winR: screenCorners ? Math.round(winW * 0.09) : 12,
+      winL: 1280 - 48 - winW, winT: 24 + Math.round((776 - winH) / 2),
+      mirrorZ: s.pinned ? 6 : (s.front === 'mirror' ? 4 : 2), dashZ: 3,
+      tbOp: show ? 1 : 0, tbPE: show ? 'auto' : 'none',
+      pillOp: s.pill && !s.curtain && !s.toast ? 1 : 0, toastOp: s.toast ? 1 : 0,
+      wide: winW >= 240,
+      pinBg: s.pinned ? 'var(--fill)' : 'transparent', pinFg: s.pinned ? 'var(--accent)' : 'inherit',
+      curBg: s.curtain ? 'var(--fill)' : 'transparent', curFg: s.curtain ? 'var(--accent)' : 'inherit',
+      shotOp: s.curtain ? 0.3 : 1,
+      size: s.size, sizeOpen: s.sizeOpen,
+      sizeItems: [['50%','⌘1'],['75%','⌘2'],['100%','⌘3'],['Fit','⌘4']].map(([v, key]) => ({ label: v === 'Fit' ? 'Fit tinggi layar' : v, key, check: s.size === v ? '✓' : '', pick: (e) => { e.stopPropagation(); this.setSize(v); } })),
+      enter: () => { clearTimeout(this.ht); this.setState({ hover: true }); this.flashPill(); },
+      leave: () => { clearTimeout(this.ht); this.ht = setTimeout(() => this.setState({ hover: false, sizeOpen: false }), 600); },
+      togglePin: () => this.setState(st => ({ pinned: !st.pinned })),
+      shoot: () => this.shoot(),
+      toggleCurtain: () => this.toggleCurtain(),
+      toggleAudio: () => this.setState(st => ({ audio: !st.audio })),
+      toggleSizeMenu: () => this.setState(st => ({ sizeOpen: !st.sizeOpen })),
+      focusDash: () => this.setState({ front: 'dash' }),
+      focusMirror: () => this.setState({ front: 'mirror' }),
+      themes: [false, true].map((d, i) => {
+        const key = d ? 'dark' : 'light';
+        return {
+          name: d ? 'DARK' : 'LIGHT', vars: this.vars(d),
+          d14id: 'd14-' + key, d14href: '#d14-' + key,
+          d14shadow: s.d14hl === i ? '0 0 0 3px var(--accent),var(--shadow)' : 'var(--shadow)',
+          goD14: () => { this.setState({ d14hl: i }); clearTimeout(this.hlT); this.hlT = setTimeout(() => this.setState({ d14hl: -1 }), 1600); },
+          diag: this.diagVals(i)
+        };
+      }),
+      menuCards: [false, true].map(d => ({
+        vars: this.vars(d), curtain: d, normal: !d,
+        status: d ? 'Mirroring · layar disembunyikan' : 'Mirroring · USB',
+        dot: d ? 'var(--text3)' : 'var(--accent)',
+        curtainCheck: d ? '✓' : '', shotColor: d ? 'var(--text3)' : 'var(--text)'
+      })),
+      settingsCards: [0, 1].map(i => {
+        const tab = s.tabs[i];
+        const is = {}; tabDefs.forEach(([k]) => is[k] = tab === k);
+        return {
+          vars: this.vars(i === 1), is,
+          title: tabDefs.find(t => t[0] === tab)[1],
+          tabs: tabDefs.map(([k, label, glyph]) => ({
+            label, glyph, bg: tab === k ? 'var(--fill)' : 'transparent', fg: tab === k ? 'var(--accent)' : 'var(--text2)',
+            pick: () => this.setState(st => { const tabs = [...st.tabs]; tabs[i] = k; return { tabs }; })
+          }))
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

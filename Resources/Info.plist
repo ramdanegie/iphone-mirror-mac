@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>id</string>
+	<key>CFBundleDisplayName</key>
+	<string>Cermin</string>
+	<key>CFBundleExecutable</key>
+	<string>Cermin</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>CFBundleIdentifier</key>
+	<string>id.egie.cermin</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Cermin</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>14.0</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Cermin membutuhkan akses "Kamera" karena macOS memperlakukan layar iPhone yang dicolok sebagai perangkat capture. Kamera Mac tidak dipakai.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Untuk memutar audio iPhone di Mac.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Supaya iPhone di Wi-Fi yang sama bisa menemukan Cermin lewat AirPlay.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_airplay._tcp</string>
+		<string>_raop._tcp</string>
+	</array>
+</dict>
+</plist>
