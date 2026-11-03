@@ -6,7 +6,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-if [[ " $* " == *" --test "* ]]; then swift test; fi
+# --disable-sandbox: SwiftPM's macro-plugin sandbox fails when nested in another sandbox (CI, agents)
+if [[ " $* " == *" --test "* ]]; then swift test --disable-sandbox; fi
 
 swift build -c release
 BIN="$(swift build -c release --show-bin-path)/Cermin"

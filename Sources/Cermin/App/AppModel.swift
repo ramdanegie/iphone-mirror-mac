@@ -258,6 +258,14 @@ final class AppModel {
         return dir.appendingPathComponent("uxplay.register")
     }
 
+    /// Generated once: iOS remembers pairings per receiver ID, so it must never change between launches.
+    private var airPlayDeviceID: String {
+        if let id = defaults.string(forKey: "airplayDeviceID") { return id }
+        let id = UxPlayConfig.randomDeviceID()
+        defaults.set(id, forKey: "airplayDeviceID")
+        return id
+    }
+
     func startWireless() {
         #if DEBUG
         if Snapshots.active { return }
@@ -272,6 +280,8 @@ final class AppModel {
         config.pin = UxPlayConfig.randomPIN()
         config.password = fixedPassword
         config.registerPath = registerURL.path
+        config.keyPath = registerURL.deletingLastPathComponent().appendingPathComponent("uxplay.pem").path
+        config.deviceID = airPlayDeviceID
         config.audio = audioEnabled
         config.peerToPeer = peerToPeer
         config.blocked = deniedIDs.sorted()
