@@ -41,6 +41,7 @@ enum Snapshots {
             ("D8-general", CGSize(width: 520, height: 380), { m.debugState() }, { AnyView(GeneralTab(model: m)) }),
             ("D8-shortcut", CGSize(width: 520, height: 380), { m.debugState() }, { AnyView(ShortcutTab(model: m)) }),
             ("D15-wireless", CGSize(width: 520, height: 560), { m.debugState(wirelessStatus: .ready) }, { AnyView(WirelessTab(model: m)) }),
+            ("about", CGSize(width: 520, height: 380), { m.debugState() }, { AnyView(AboutTab()) }),
         ]
         for (name, size, setup, view) in cases {
             for (suffix, appearance) in [("light", NSAppearance.Name.aqua), ("dark", .darkAqua)] {

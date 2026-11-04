@@ -202,7 +202,7 @@ struct WirelessTab: View {
         switch model.wirelessStatus {
         case .off: "Mati"
         case .ready: "Siap menerima"
-        case .notInstalled: "UxPlay belum terpasang (./scripts/install-uxplay.sh)"
+        case .notInstalled: "UxPlay belum terpasang (lihat jendela Wireless)"
         case .failed: "Berhenti, lihat jendela Cermin"
         }
     }
@@ -217,9 +217,35 @@ struct AboutTab: View {
                 .font(.caption).foregroundStyle(.secondary)
             Text("Mirror iPhone ke Mac. Tanpa watermark, gratis & offline.")
                 .font(.system(size: 12))
+            Text("Dibuat oleh \(About.author)").font(.system(size: 12, weight: .medium)).padding(.top, 6)
+            HStack(spacing: 16) {
+                Link(destination: About.profile) { Label("github.com/ramdanegie", systemImage: "person.crop.circle") }
+                Link(destination: About.repository) { Label("Source code", systemImage: "chevron.left.forwardslash.chevron.right") }
+            }
+            .font(.caption)
             Text("Wireless memakai UxPlay (GPL-3.0), dijalankan sebagai program terpisah.")
-                .font(.caption).foregroundStyle(.secondary)
+                .font(.caption).foregroundStyle(.secondary).padding(.top, 6)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+/// Who made Cermin, shown in Settings → Tentang and the standard About panel.
+enum About {
+    static let author = "Egie Ramdan"
+    static let profile = URL(string: "https://github.com/ramdanegie")!
+    static let repository = URL(string: "https://github.com/ramdanegie/iphone-mirror-mac")!
+
+    /// The app menu's About panel, with the author and links as credits.
+    @MainActor static func showPanel() {
+        let center = NSMutableParagraphStyle()
+        center.alignment = .center
+        let base: [NSAttributedString.Key: Any] = [.font: NSFont.systemFont(ofSize: 11), .foregroundColor: NSColor.labelColor, .paragraphStyle: center]
+        let credits = NSMutableAttributedString(string: "Dibuat oleh \(author)\n", attributes: base)
+        credits.append(NSAttributedString(string: "github.com/ramdanegie", attributes: base.merging([.link: profile]) { $1 }))
+        credits.append(NSAttributedString(string: "  ·  ", attributes: base))
+        credits.append(NSAttributedString(string: "Source code", attributes: base.merging([.link: repository]) { $1 }))
+        NSApp.orderFrontStandardAboutPanel(options: [.credits: credits])
+        NSApp.activate(ignoringOtherApps: true)
     }
 }

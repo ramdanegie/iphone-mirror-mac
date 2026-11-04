@@ -1,0 +1,28 @@
+Cermin — install
+================
+
+Needs an Apple Silicon Mac (M1 or later) on macOS 14 or later, and an iPhone.
+
+1. Drag Cermin to Applications.
+2. Open it. macOS says it cannot check the app (it is not notarized yet). Click Done.
+3. System Settings → Privacy & Security → "Open Anyway" next to Cermin, then enter your password.
+   (Or in Terminal: xattr -dr com.apple.quarantine /Applications/Cermin.app)
+4. USB: plug in the iPhone with a data cable, unlock it and tap "Trust". Allow Camera access when
+   asked: macOS treats a plugged-in iPhone screen as a capture device. Your Mac camera is not used.
+5. Wireless (optional): open Settings → Wireless in Cermin and copy the install command into Terminal
+   (needs Homebrew, https://brew.sh). It builds UxPlay (GPL-3.0) once.
+
+-----
+
+Cermin — instalasi
+
+Butuh Mac Apple Silicon (M1 ke atas) dengan macOS 14 ke atas, dan iPhone.
+
+1. Seret Cermin ke Applications.
+2. Buka Cermin. macOS bilang tidak bisa memeriksa app ini (belum dinotarisasi). Klik Done.
+3. System Settings → Privacy & Security → "Open Anyway" di samping Cermin, lalu masukkan password.
+   (Atau di Terminal: xattr -dr com.apple.quarantine /Applications/Cermin.app)
+4. USB: colok iPhone dengan kabel data, buka kuncinya, ketuk "Percayai". Izinkan akses Kamera saat
+   diminta: macOS memperlakukan layar iPhone yang dicolok sebagai perangkat capture. Kamera Mac tidak dipakai.
+5. Wireless (opsional): buka Pengaturan → Wireless di Cermin, salin perintah pemasangan ke Terminal
+   (butuh Homebrew, https://brew.sh). UxPlay (GPL-3.0) di-build sekali.

@@ -99,6 +99,9 @@ struct MirrorCommands: Commands {
 
     var body: some Commands {
         CommandGroup(replacing: .newItem) {}
+        CommandGroup(replacing: .appInfo) {
+            Button("Tentang Cermin") { About.showPanel() }
+        }
         CommandMenu("Mirror") {
             Button(model.pinned ? "Lepas dari Atas" : "Selalu di Atas") { model.togglePinned() }
                 .keyboardShortcut("t")

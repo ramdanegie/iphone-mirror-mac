@@ -72,9 +72,9 @@ struct WirelessReadyView: View {
     @ViewBuilder private var notInstalled: some View {
         Image(systemName: "airplayvideo").font(.system(size: 28)).foregroundStyle(Color.accentTeal)
         Text("Komponen AirPlay belum terpasang").serif(20)
-        Text("Wireless memakai UxPlay (open source). Pasang sekali lewat Terminal dari folder proyek Cermin:")
+        Text("Wireless memakai UxPlay (open source). Pasang sekali: salin perintah ini ke Terminal (butuh Homebrew):")
             .font(.system(size: 12)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
-        CopyableCommand(command: "./scripts/install-uxplay.sh")
+        CopyableCommand(command: UxPlayInstall.command)
         HStack {
             Button("Periksa lagi") { model.startWireless() }.buttonStyle(PillButtonStyle())
             Button("Pakai USB") { model.setSource(.usb) }.buttonStyle(PillButtonStyle(prominent: false))
@@ -128,6 +128,14 @@ struct NumberedStep: View {
                 .background(.quaternary, in: Circle())
             text.font(.system(size: 12))
         }
+    }
+}
+
+/// The UxPlay installer ships inside Cermin.app (Resources), so a DMG install works without the source folder.
+enum UxPlayInstall {
+    static var command: String {
+        if let p = Bundle.main.path(forResource: "install-uxplay", ofType: "sh") { return "bash '\(p)'" }
+        return "./scripts/install-uxplay.sh"   // running from the source tree
     }
 }
 
@@ -243,7 +251,7 @@ struct DiagnosticsView: View {
                 CheckRow(ok: nil, title: "Wi-Fi sama?",
                          detail: "Mac di \(model.wifiName ?? "jaringan ini") (\(model.ipAddress ?? "—")), pastikan iPhone juga")
                 CheckRow(ok: installed, title: "UxPlay terpasang",
-                         detail: installed ? "Ditemukan" : "Jalankan ./scripts/install-uxplay.sh")
+                         detail: installed ? "Ditemukan" : "Jalankan perintah pemasangan di atas")
                 CheckRow(ok: nil, title: "Izin Local Network",
                          detail: "macOS tidak memberi tahu statusnya; cek Cermin diizinkan", action: ("Periksa", { Diagnostics.open(.localNetwork) }))
                 CheckRow(ok: firewallOn.map { !$0 }, title: "Firewall",
