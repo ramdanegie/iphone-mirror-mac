@@ -1,0 +1,2 @@
+/* Indonesian. Intentionally empty: every key is already the Indonesian text.
+   The file must exist, or macOS falls back to the English table for Indonesian users. */

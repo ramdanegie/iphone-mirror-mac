@@ -12,7 +12,7 @@ struct CerminApp: App {
             MenuContent(model: model)
         } label: {
             Image(systemName: model.curtain ? "iphone.slash" : "iphone")
-                .accessibilityLabel(model.curtain ? "Cermin, layar disembunyikan" : "Cermin")
+                .accessibilityLabel(model.curtain ? Text("Cermin, layar disembunyikan") : Text("Cermin"))
         }
         Settings {
             SettingsView(model: model)
@@ -52,10 +52,10 @@ struct MenuContent: View {
     let model: AppModel
 
     var body: some View {
-        Text(model.phase.deviceName ?? "Belum ada iPhone")
+        model.phase.deviceName.map(Text.init(verbatim:)) ?? Text("Belum ada iPhone")
         Text(statusLine)
         Divider()
-        Button(model.windowVisible ? "Sembunyikan Jendela" : "Tampilkan Jendela") { model.toggleWindow() }
+        Button(model.windowVisible ? LocalizedStringKey("Sembunyikan Jendela") : LocalizedStringKey("Tampilkan Jendela")) { model.toggleWindow() }
             .keyboardShortcut("m", modifiers: [.option, .command])
         Toggle("Selalu di Atas", isOn: Binding(get: { model.pinned }, set: { _ in model.togglePinned() }))
             .keyboardShortcut("t")
@@ -85,10 +85,10 @@ struct MenuContent: View {
 
     private var statusLine: String {
         switch model.phase {
-        case .waiting: model.source == .usb ? "Menunggu iPhone · USB" : "Siap menerima · AirPlay"
-        case .connecting: "Menyambungkan…"
-        case .mirroring: model.curtain ? "Mirroring · layar disembunyikan" : "Mirroring · \(model.source == .usb ? "USB" : "AirPlay")"
-        case .disconnected: "Terputus"
+        case .waiting: model.source == .usb ? String(localized: "Menunggu iPhone · USB") : String(localized: "Siap menerima · AirPlay")
+        case .connecting: String(localized: "Menyambungkan…")
+        case .mirroring: model.curtain ? String(localized: "Mirroring · layar disembunyikan") : "Mirroring · \(model.source == .usb ? "USB" : "AirPlay")"
+        case .disconnected: String(localized: "Terputus")
         }
     }
 }
@@ -103,10 +103,10 @@ struct MirrorCommands: Commands {
             Button("Tentang Cermin") { About.showPanel() }
         }
         CommandMenu("Mirror") {
-            Button(model.pinned ? "Lepas dari Atas" : "Selalu di Atas") { model.togglePinned() }
+            Button(model.pinned ? LocalizedStringKey("Lepas dari Atas") : LocalizedStringKey("Selalu di Atas")) { model.togglePinned() }
                 .keyboardShortcut("t")
             // No key equivalent here: the global hotkey already handles it and would toggle twice.
-            Button(model.curtain ? "Tampilkan Layar (\(model.curtainHotKeyDisplay))" : "Privacy Curtain (\(model.curtainHotKeyDisplay))") {
+            Button(model.curtain ? LocalizedStringKey("Tampilkan Layar (\(model.curtainHotKeyDisplay))") : LocalizedStringKey("Privacy Curtain (\(model.curtainHotKeyDisplay))")) {
                 model.toggleCurtain()
             }
             Button("Ambil Screenshot") { model.screenshot() }
@@ -117,7 +117,7 @@ struct MirrorCommands: Commands {
                     .keyboardShortcut(KeyEquivalent(Character("\(index + 1)")))
             }
             Divider()
-            Button(model.windowVisible ? "Sembunyikan Jendela" : "Tampilkan Jendela") { model.toggleWindow() }
+            Button(model.windowVisible ? LocalizedStringKey("Sembunyikan Jendela") : LocalizedStringKey("Tampilkan Jendela")) { model.toggleWindow() }
                 .keyboardShortcut("m", modifiers: [.option, .command])
         }
     }

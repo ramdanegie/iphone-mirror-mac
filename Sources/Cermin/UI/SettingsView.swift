@@ -46,6 +46,20 @@ struct GeneralTab: View {
                 Toggle("Mulai mirror otomatis saat iPhone dicolok", isOn: $model.autoStart)
             }
             Section {
+                Picker("Bahasa", selection: Binding(get: { language }, set: { setLanguage($0) })) {
+                    Text("Ikuti sistem").tag("")
+                    Text(verbatim: "English").tag("en")
+                    Text(verbatim: "Bahasa Indonesia").tag("id")
+                }
+                if languageChanged {
+                    HStack {
+                        Text("Berlaku setelah Cermin dibuka ulang.").font(.caption).foregroundStyle(.secondary)
+                        Spacer()
+                        Button("Buka Ulang") { relaunch() }
+                    }
+                }
+            }
+            Section {
                 LabeledContent("Folder screenshot") {
                     HStack {
                         Text(model.screenshotFolder).foregroundStyle(.secondary).lineLimit(1).truncationMode(.middle)
@@ -56,6 +70,28 @@ struct GeneralTab: View {
             }
         }
         .formStyle(.grouped)
+    }
+
+    @ViewState private var languageChanged = false
+
+    /// Cermin's own AppleLanguages ("" = follow the system); the global domain would always answer.
+    private var language: String {
+        let own = UserDefaults.standard.persistentDomain(forName: Bundle.main.bundleIdentifier ?? "")?["AppleLanguages"] as? [String]
+        return own?.first.map { String($0.prefix(2)) } ?? ""
+    }
+
+    private func setLanguage(_ code: String) {
+        if code.isEmpty { UserDefaults.standard.removeObject(forKey: "AppleLanguages") }
+        else { UserDefaults.standard.set([code], forKey: "AppleLanguages") }
+        languageChanged = true
+    }
+
+    private func relaunch() {
+        let p = Process()
+        p.executableURL = URL(fileURLWithPath: "/bin/sh")
+        p.arguments = ["-c", "sleep 0.5; /usr/bin/open \"$0\"", Bundle.main.bundlePath]
+        try? p.run()
+        NSApp.terminate(nil)
     }
 
     private func chooseFolder() {
@@ -104,7 +140,7 @@ struct HotKeyRecorder: View {
         Button {
             recording ? stop() : start()
         } label: {
-            Text(recording ? "Tekan kombinasi…" : combo.display)
+            (recording ? Text("Tekan kombinasi…") : Text(verbatim: combo.display))
                 .font(.system(size: 12, weight: .medium))
                 .frame(minWidth: 90)
                 .padding(.horizontal, 10).frame(height: 24)
@@ -200,10 +236,10 @@ struct WirelessTab: View {
 
     private var status: String {
         switch model.wirelessStatus {
-        case .off: "Mati"
-        case .ready: "Siap menerima"
-        case .notInstalled: "UxPlay belum terpasang (lihat jendela Wireless)"
-        case .failed: "Berhenti, lihat jendela Cermin"
+        case .off: String(localized: "Mati")
+        case .ready: String(localized: "Siap menerima")
+        case .notInstalled: String(localized: "UxPlay belum terpasang (lihat jendela Wireless)")
+        case .failed: String(localized: "Berhenti, lihat jendela Cermin")
         }
     }
 }
@@ -241,7 +277,7 @@ enum About {
         let center = NSMutableParagraphStyle()
         center.alignment = .center
         let base: [NSAttributedString.Key: Any] = [.font: NSFont.systemFont(ofSize: 11), .foregroundColor: NSColor.labelColor, .paragraphStyle: center]
-        let credits = NSMutableAttributedString(string: "Dibuat oleh \(author)\n", attributes: base)
+        let credits = NSMutableAttributedString(string: String(localized: "Dibuat oleh \(author)") + "\n", attributes: base)
         credits.append(NSAttributedString(string: "github.com/ramdanegie", attributes: base.merging([.link: profile]) { $1 }))
         credits.append(NSAttributedString(string: "  ·  ", attributes: base))
         credits.append(NSAttributedString(string: "Source code", attributes: base.merging([.link: repository]) { $1 }))
