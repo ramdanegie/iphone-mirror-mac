@@ -46,6 +46,8 @@ Cermin menampilkan layar iPhone di **jendela macOS biasa**: bisa digeser, di-res
 3. Buka Cermin. Build belum dinotarisasi, jadi macOS tidak bisa memeriksanya: klik **Done**, lalu buka **System Settings → Privacy & Security** dan klik **Open Anyway**. (Atau jalankan `xattr -dr com.apple.quarantine /Applications/Cermin.app`.)
 4. Colok iPhone dengan kabel data, buka kuncinya, dan ketuk **Percayai**. Izinkan akses **Kamera** saat diminta: macOS memperlakukan layar iPhone yang dicolok sebagai perangkat capture. Kamera Mac tidak pernah dipakai.
 
+Cermin bisa memberi tahu saat ada versi baru (Pengaturan → Tentang → Periksa sekarang, atau cek harian yang kamu nyalakan) dan menampilkan perubahan setelah tiap update; lihat [CHANGELOG.id.md](CHANGELOG.id.md). Cermin tetap offline kecuali fitur ini dipakai.
+
 ### Wireless (AirPlay), sekali saja
 
 Buka **Pengaturan → Wireless** di Cermin, lalu salin perintah pemasangan ke Terminal. Butuh [Homebrew](https://brew.sh); perintah ini mem-build [UxPlay](https://github.com/FDH2/UxPlay) 1.74 (commit `534e2cc`, dikunci) ke `~/Library/Application Support/Cermin/bin/uxplay`. Dari folder source, bisa juga `./scripts/install-uxplay.sh`.
