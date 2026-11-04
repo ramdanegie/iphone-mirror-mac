@@ -2,12 +2,17 @@
 
 Semua perubahan penting di Cermin. Cermin menampilkan bagian untuk versimu sekali setelah update (Pengaturan → Tentang → Yang baru).
 
+## [1.3.0] - 2026-11-04
+
+### Ditambahkan
+- Cek update: Cermin bisa mencari rilis baru di GitHub (Pengaturan → Tentang), menampilkan catatan rilis, dan mengunduh DMG. Cek harian bersifat opt-in, jadi Cermin tetap offline kecuali kamu menyalakannya atau menekan "Periksa sekarang".
+- Yang baru: setelah update, Cermin menampilkan perubahan di versimu sekali.
+
 ## [1.2.0] - 2026-11-04
 
 ### Ditambahkan
-- Bahasa Inggris dan Indonesia, dengan pilihan bahasa di Pengaturan → Umum.
-- Cek update: Cermin bisa mencari rilis baru di GitHub (Pengaturan → Tentang), menampilkan catatan rilis, dan mengunduh DMG. Cek harian bersifat opt-in, jadi Cermin tetap offline kecuali kamu menyalakannya atau menekan "Periksa sekarang".
-- Yang baru: setelah update, Cermin menampilkan perubahan di versimu sekali.
+- Seluruh app dalam bahasa Inggris dan Indonesia: menu, onboarding, pengaturan, setup dan diagnostik wireless, prompt, dan permintaan izin.
+- Pengaturan → Umum → Bahasa: ikuti sistem, English, atau Bahasa Indonesia, dengan tombol Mulai Ulang.
 
 ## [1.1.1] - 2026-11-04
 
