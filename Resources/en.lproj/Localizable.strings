@@ -214,3 +214,23 @@
 "Ikuti sistem" = "System default";
 "Berlaku setelah Cermin dibuka ulang." = "Applies after Cermin restarts.";
 "Buka Ulang" = "Restart";
+
+/* Updates and What's New */
+"Pembaruan" = "Updates";
+"Periksa Pembaruan…" = "Check for Updates…";
+"Periksa pembaruan otomatis (sekali sehari)" = "Check for updates automatically (daily)";
+"Hanya mengambil daftar rilis dari api.github.com; tidak ada data lain yang dikirim." = "Only fetches the release list from api.github.com; nothing else is sent.";
+"Periksa sekarang" = "Check now";
+"Yang baru" = "What's New";
+"Yang baru di Cermin %@" = "What's new in Cermin %@";
+"Memeriksa…" = "Checking…";
+"Cermin %@ sudah versi terbaru." = "Cermin %@ is up to date.";
+"Tidak bisa memeriksa pembaruan. Periksa koneksi internet." = "Couldn't check for updates. Check your internet connection.";
+"Cermin %@ tersedia" = "Cermin %@ is available";
+"Kamu memakai %@." = "You have %@.";
+"Build ini belum dinotarisasi: setelah memasang, buka System Settings → Privacy & Security → Open Anyway." = "This build is not notarized: after installing, open System Settings → Privacy & Security → Open Anyway.";
+"Lewati versi ini" = "Skip This Version";
+"Nanti" = "Later";
+"Unduh" = "Download";
+"Oke" = "OK";
+"Semua perubahan" = "All changes";

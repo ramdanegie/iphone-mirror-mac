@@ -37,6 +37,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             signalSources.append(source)
         }
         AppModel.shared.start()
+        UpdateService.shared.launched()   // What's New after an update; daily check only if turned on
     }
     func applicationWillTerminate(_ notification: Notification) { AppModel.shared.shutdown() }
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
@@ -71,6 +72,7 @@ struct MenuContent: View {
             Text("USB").tag(SourceKind.usb)
             Text("Wireless (AirPlay)").tag(SourceKind.wireless)
         }
+        Button("Periksa Pembaruan…") { UpdateService.shared.check(manual: true); UpdateWindow.show() }
         SettingsLink { Text("Pengaturan…") }
             .keyboardShortcut(",")
         Divider()
@@ -101,6 +103,7 @@ struct MirrorCommands: Commands {
         CommandGroup(replacing: .newItem) {}
         CommandGroup(replacing: .appInfo) {
             Button("Tentang Cermin") { About.showPanel() }
+            Button("Periksa Pembaruan…") { UpdateService.shared.check(manual: true); UpdateWindow.show() }
         }
         CommandMenu("Mirror") {
             Button(model.pinned ? LocalizedStringKey("Lepas dari Atas") : LocalizedStringKey("Selalu di Atas")) { model.togglePinned() }

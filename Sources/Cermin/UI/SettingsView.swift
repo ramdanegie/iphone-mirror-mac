@@ -261,9 +261,22 @@ struct AboutTab: View {
             .font(.caption)
             Text("Wireless memakai UxPlay (GPL-3.0), dijalankan sebagai program terpisah.")
                 .font(.caption).foregroundStyle(.secondary).padding(.top, 6)
+            Divider().padding(.vertical, 6).frame(width: 360)
+            // Updates: Cermin is offline unless the user opts in or presses "Check now".
+            Toggle("Periksa pembaruan otomatis (sekali sehari)", isOn: Binding(get: { updates.autoCheck }, set: { updates.autoCheck = $0 }))
+                .font(.system(size: 12))
+            Text("Hanya mengambil daftar rilis dari api.github.com; tidak ada data lain yang dikirim.")
+                .font(.caption).foregroundStyle(.secondary)
+            HStack {
+                Button("Periksa sekarang") { updates.check(manual: true) }.disabled(updates.state == .checking)
+                Button("Yang baru") { WhatsNewWindow.show() }.disabled(updates.whatsNew() == nil)
+            }
+            .controlSize(.small)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
+
+    private var updates: UpdateService { UpdateService.shared }
 }
 
 /// Who made Cermin, shown in Settings → Tentang and the standard About panel.

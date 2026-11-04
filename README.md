@@ -46,6 +46,8 @@
 3. Open Cermin. Builds are not notarized yet, so macOS cannot verify it: click **Done**, then go to **System Settings → Privacy & Security** and click **Open Anyway**. (Or run `xattr -dr com.apple.quarantine /Applications/Cermin.app`.)
 4. Plug in the iPhone with a data cable, unlock it, and tap **Trust**. Allow **Camera** access when asked: macOS treats a plugged-in iPhone screen as a capture device. Your Mac's camera is never used.
 
+Cermin can tell you when a new version is out (Settings → About → Check now, or a daily check you turn on) and shows what changed after each update; see [CHANGELOG.md](CHANGELOG.md). It stays offline unless you use that.
+
 ### Wireless (AirPlay), once
 
 Open **Settings → Wireless** in Cermin and copy the install command into Terminal. It needs [Homebrew](https://brew.sh) and builds [UxPlay](https://github.com/FDH2/UxPlay) 1.74 (pinned commit `534e2cc`) into `~/Library/Application Support/Cermin/bin/uxplay`. From a source checkout you can also run `./scripts/install-uxplay.sh`.
