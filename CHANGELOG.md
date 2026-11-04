@@ -2,12 +2,17 @@
 
 All notable changes to Cermin. Cermin shows the section for your version once after an update (Settings → About → What's New).
 
+## [1.3.0] - 2026-11-04
+
+### Added
+- Update check: Cermin can look for new releases on GitHub (Settings → About), shows the release notes, and downloads the DMG. Daily checks are opt-in, so Cermin stays offline unless you turn them on or press "Check now".
+- What's New: after an update, Cermin shows what changed in your version once.
+
 ## [1.2.0] - 2026-11-04
 
 ### Added
-- English and Indonesian, with a language picker in Settings → General.
-- Update check: Cermin can look for new releases on GitHub (Settings → About), shows the release notes, and downloads the DMG. Daily checks are opt-in, so Cermin stays offline unless you turn them on or press "Check now".
-- What's New: after an update, Cermin shows what changed in your version once.
+- The whole app in English and Indonesian: menus, onboarding, settings, wireless setup and diagnostics, prompts, and permission requests.
+- Settings → General → Language: follow the system, English, or Bahasa Indonesia, with a Restart button.
 
 ## [1.1.1] - 2026-11-04
 
