@@ -3,7 +3,12 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>id</string>
+	<string>en</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>id</string>
+	</array>
 	<key>CFBundleDisplayName</key>
 	<string>Cermin</string>
 	<key>CFBundleExecutable</key>
@@ -19,9 +24,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.1</string>
+	<string>1.2.0</string>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>3</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
 	<key>LSMinimumSystemVersion</key>
@@ -31,11 +36,11 @@
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Cermin membutuhkan akses "Kamera" karena macOS memperlakukan layar iPhone yang dicolok sebagai perangkat capture. Kamera Mac tidak dipakai.</string>
+	<string>Cermin needs "Camera" access because macOS treats a plugged-in iPhone screen as a capture device. Your Mac's camera is not used.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Untuk memutar audio iPhone di Mac.</string>
+	<string>To play iPhone audio on the Mac.</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Supaya iPhone di Wi-Fi yang sama bisa menemukan Cermin lewat AirPlay.</string>
+	<string>So an iPhone on the same Wi-Fi can find Cermin over AirPlay.</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_airplay._tcp</string>

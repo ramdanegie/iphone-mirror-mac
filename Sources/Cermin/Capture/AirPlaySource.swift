@@ -135,7 +135,7 @@ final class AirPlaySource {
         receiver.pause()
         if !stopping {
             let tail = recentLog.suffix(3).joined(separator: "\n")
-            onExit?("UxPlay berhenti (kode \(status)).\(tail.isEmpty ? "" : "\n\(tail)")")
+            onExit?(String(localized: "UxPlay berhenti (kode \(status)).") + (tail.isEmpty ? "" : "\n\(tail)"))
         }
     }
 
@@ -202,7 +202,7 @@ private final class RTPReceiver: @unchecked Sendable {
         let params = NWParameters.udp
         params.requiredLocalEndpoint = .hostPort(host: "127.0.0.1", port: NWEndpoint.Port(rawValue: port)!)
         guard let listener = try? NWListener(using: params) else {
-            onFailure?("Port video \(port) tidak bisa dibuka.")
+            onFailure?(String(localized: "Port video \(port) tidak bisa dibuka."))
             return
         }
         listener.newConnectionHandler = { [weak self] connection in
@@ -215,7 +215,7 @@ private final class RTPReceiver: @unchecked Sendable {
             guard let self, let listener, listener === self.listener, case .failed(let error) = state else { return }
             listener.cancel()
             self.listener = nil
-            self.onFailure?("Port video \(port) tidak bisa dipakai (\(error.localizedDescription)). Tutup app lain yang memakai port itu.")
+            self.onFailure?(String(localized: "Port video \(port) tidak bisa dipakai (\(error.localizedDescription)). Tutup app lain yang memakai port itu."))
         }
         self.listener = listener
         listener.start(queue: queue)

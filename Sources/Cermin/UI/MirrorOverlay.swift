@@ -129,7 +129,7 @@ struct MirrorToolbar: View {
 struct ToolbarIcon: View {
     let symbol: String
     var active = false
-    let help: String
+    let help: LocalizedStringKey
     let action: () -> Void
 
     var body: some View {
@@ -255,7 +255,7 @@ struct USBWaitingView: View {
 
 struct ChecklistRow: View {
     enum State { case done, active, pending }
-    let text: String
+    let text: LocalizedStringKey
     let state: State
 
     var body: some View {

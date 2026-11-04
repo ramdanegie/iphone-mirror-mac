@@ -137,7 +137,7 @@ struct OnboardingView: View {
         }
     }
 
-    private func title(_ first: String, _ second: String) -> some View {
+    private func title(_ first: LocalizedStringKey, _ second: LocalizedStringKey) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(first).serif(32)
             Text(second).serif(32, italic: true)
@@ -146,10 +146,10 @@ struct OnboardingView: View {
         .accessibilityAddTraits(.isHeader)
     }
 
-    private func benefit(_ numeral: String, _ bold: String, _ rest: String) -> some View {
+    private func benefit(_ numeral: String, _ bold: LocalizedStringKey, _ rest: LocalizedStringKey) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
             Text(numeral).serif(12, italic: true).foregroundStyle(Color.accentTeal).frame(width: 18, alignment: .leading)
-            (Text(bold).fontWeight(.semibold) + Text(" — \(rest)").foregroundColor(.secondary)).font(.system(size: 12))
+            (Text(bold).fontWeight(.semibold) + Text(verbatim: " — ").foregroundColor(.secondary) + Text(rest).foregroundColor(.secondary)).font(.system(size: 12))
         }
     }
 }

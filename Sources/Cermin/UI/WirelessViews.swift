@@ -32,7 +32,7 @@ struct WirelessReadyView: View {
         }
     }
 
-    private var wifiLabel: String { model.wifiName ?? "Wi-Fi yang sama dengan Mac" }
+    private var wifiLabel: String { model.wifiName ?? String(localized: "Wi-Fi yang sama dengan Mac") }
 
     @ViewBuilder private var ready: some View {
         HStack(spacing: 8) {
@@ -43,7 +43,7 @@ struct WirelessReadyView: View {
             .font(.system(size: 12)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
         VStack(alignment: .leading, spacing: 4) {
             InfoRow(label: "Wi-Fi", value: model.wifiName ?? "—")
-            InfoRow(label: "IP", value: model.ipAddress ?? "tidak ada jaringan")
+            InfoRow(label: "IP", value: model.ipAddress ?? String(localized: "tidak ada jaringan"))
         }
         .padding(10)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -104,7 +104,7 @@ struct WirelessReadyView: View {
 }
 
 struct InfoRow: View {
-    let label: String
+    let label: LocalizedStringKey
     let value: String
 
     var body: some View {
@@ -208,7 +208,7 @@ struct ConnectionPromptView: View {
                     .background(.quaternary, in: Circle())
                 Text("\(request.name) ingin mirror ke \(model.receiverName)")
                     .font(.system(size: 14, weight: .semibold)).multilineTextAlignment(.center)
-                Text("Lewat Wi-Fi \(model.wifiName ?? "lokal")").font(.system(size: 12)).foregroundStyle(.secondary)
+                Text("Lewat Wi-Fi \(model.wifiName ?? String(localized: "lokal"))").font(.system(size: 12)).foregroundStyle(.secondary)
                 Toggle("Selalu izinkan perangkat ini", isOn: $always).toggleStyle(.checkbox).font(.system(size: 12))
                 HStack {
                     Button("Tolak") { model.deny() }.buttonStyle(PillButtonStyle(prominent: false))
@@ -249,7 +249,7 @@ struct DiagnosticsView: View {
 
             VStack(spacing: 0) {
                 CheckRow(ok: nil, title: "Wi-Fi sama?",
-                         detail: "Mac di \(model.wifiName ?? "jaringan ini") (\(model.ipAddress ?? "—")), pastikan iPhone juga")
+                         detail: "Mac di \(model.wifiName ?? String(localized: "jaringan ini")) (\(model.ipAddress ?? "—")), pastikan iPhone juga")
                 CheckRow(ok: installed, title: "UxPlay terpasang",
                          detail: installed ? "Ditemukan" : "Jalankan perintah pemasangan di atas")
                 CheckRow(ok: nil, title: "Izin Local Network",
@@ -288,9 +288,9 @@ struct DiagnosticsView: View {
 
 private struct CheckRow: View {
     let ok: Bool?
-    let title: String
-    let detail: String
-    var action: (String, () -> Void)?
+    let title: LocalizedStringKey
+    let detail: LocalizedStringKey
+    var action: (LocalizedStringKey, () -> Void)?
 
     var body: some View {
         HStack(alignment: .top, spacing: 9) {

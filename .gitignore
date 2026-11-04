@@ -3,3 +3,4 @@ build/
 .swiftpm/
 .DS_Store
 .playwright-mcp/
+.build-l10n/

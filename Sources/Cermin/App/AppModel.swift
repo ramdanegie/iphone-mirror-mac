@@ -290,7 +290,7 @@ final class AppModel {
             wirelessStatus = .ready
             refreshNetwork()
         } catch {
-            wirelessStatus = .failed("UxPlay gagal dijalankan: \(error.localizedDescription)")
+            wirelessStatus = .failed(String(localized: "UxPlay gagal dijalankan: \(error.localizedDescription)"))
         }
     }
 
@@ -352,7 +352,7 @@ final class AppModel {
                 showWindow()
             }
         case .authenticated(let ok):
-            if ok { pinCode = nil } else if source == .wireless { showToast("Kode salah. Coba lagi di iPhone.") }
+            if ok { pinCode = nil } else if source == .wireless { showToast(String(localized: "Kode salah. Coba lagi di iPhone.")) }
         case .sessionEnded:
             // UxPlay also logs this between the short connections iOS makes while pairing; only a real stream counts.
             // Always relaunch afterwards: fresh PIN, and settings changed mid-session take effect.
@@ -445,15 +445,15 @@ final class AppModel {
 
     func screenshot() {
         guard !curtain, let frame = pipeline.latestFrame() else {
-            showToast("Belum ada layar untuk di-screenshot")
+            showToast(String(localized: "Belum ada layar untuk di-screenshot"))
             return
         }
         let folder = URL(fileURLWithPath: (screenshotFolder as NSString).expandingTildeInPath, isDirectory: true)
         do {
             _ = try Screenshot.save(frame, to: folder, copyToClipboard: copyScreenshot)
-            showToast("Screenshot tersimpan")
+            showToast(String(localized: "Screenshot tersimpan"))
         } catch {
-            showToast("Gagal menyimpan screenshot")
+            showToast(String(localized: "Gagal menyimpan screenshot"))
         }
     }
 
@@ -461,7 +461,7 @@ final class AppModel {
         do {
             if on { try SMAppService.mainApp.register() } else { try SMAppService.mainApp.unregister() }
         } catch {
-            showToast("Tidak bisa mengubah login item: \(error.localizedDescription)")
+            showToast(String(localized: "Tidak bisa mengubah login item: \(error.localizedDescription)"))
         }
         launchAtLogin = SMAppService.mainApp.status == .enabled
     }
@@ -515,7 +515,7 @@ final class AppModel {
 
     private func registerHotKey() {
         if !hotKey.register(curtainHotKey, action: { [weak self] in self?.toggleCurtain() }) {
-            showToast("Shortcut \(curtainHotKey.display) sudah dipakai app lain")
+            showToast(String(localized: "Shortcut \(curtainHotKey.display) sudah dipakai app lain"))
         }
     }
 }

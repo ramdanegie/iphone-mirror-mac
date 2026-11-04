@@ -1,0 +1,4 @@
+/* Indonesian permission prompts. The UI strings need no file: their keys are already Indonesian. */
+"NSCameraUsageDescription" = "Cermin membutuhkan akses \"Kamera\" karena macOS memperlakukan layar iPhone yang dicolok sebagai perangkat capture. Kamera Mac tidak dipakai.";
+"NSMicrophoneUsageDescription" = "Untuk memutar audio iPhone di Mac.";
+"NSLocalNetworkUsageDescription" = "Supaya iPhone di Wi-Fi yang sama bisa menemukan Cermin lewat AirPlay.";

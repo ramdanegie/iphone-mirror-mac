@@ -245,7 +245,7 @@ enum OnboardingWindow {
         window.titleVisibility = .hidden
         window.isMovableByWindowBackground = true
         window.isReleasedWhenClosed = false
-        window.title = "Selamat datang di Cermin"
+        window.title = String(localized: "Selamat datang di Cermin")
         window.contentView = NSHostingView(rootView: OnboardingView(model: model))
         window.setFrame(NSRect(x: 0, y: 0, width: 680, height: 440), display: false) // frame, titlebar included
         window.delegate = OnboardingCloseHandler.shared

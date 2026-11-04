@@ -35,6 +35,7 @@ Cermin menampilkan layar iPhone di **jendela macOS biasa**: bisa digeser, di-res
 - 🔊 **Audio iPhone di Mac**, dengan on/off dan volume.
 - 🔄 **Mengikuti rotasi** dan mengingat ukuran serta posisi jendela per perangkat.
 - 🧰 Toolbar di samping jendela, di luar area yang di-share, jadi tidak ikut tampil di meeting.
+- 🌏 **Bahasa Indonesia dan English**, mengikuti bahasa Mac atau pilihanmu di Pengaturan → Umum.
 
 ## Instalasi
 
@@ -101,6 +102,8 @@ PRD.md, design/       spesifikasi produk dan design board
 ## Kontribusi
 
 Issue dan pull request sangat diterima. Jalankan `./scripts/build.sh --test` sebelum membuka PR. Swift 6, SwiftPM, tanpa dependensi Swift pihak ketiga.
+
+Teks UI ditulis dalam Bahasa Indonesia di kode dan diterjemahkan di `Resources/en.lproj/Localizable.strings`; `./scripts/check-strings.sh` (bagian dari `--test`) gagal bila ada teks tanpa terjemahan English.
 
 Kalau Cermin berguna buatmu, ⭐ membantu orang lain menemukannya.
 

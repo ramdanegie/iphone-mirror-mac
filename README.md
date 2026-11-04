@@ -35,6 +35,7 @@
 - 🔊 **iPhone audio on the Mac**, with on/off and volume.
 - 🔄 **Follows rotation** and remembers window size and position per device.
 - 🧰 A side toolbar that stays outside the shared window, so it never shows up in your meeting.
+- 🌏 **English and Bahasa Indonesia**, following your Mac's language or your choice in Settings → General.
 
 ## Install
 
@@ -101,6 +102,8 @@ PRD.md, design/       product spec (in Indonesian) and design board
 ## Contributing
 
 Issues and pull requests are welcome. Run `./scripts/build.sh --test` before opening a PR. Swift 6, SwiftPM, no third-party Swift dependencies.
+
+UI text is written in Indonesian in the code and translated in `Resources/en.lproj/Localizable.strings`; `./scripts/check-strings.sh` (part of `--test`) fails when a string has no English translation.
 
 If Cermin is useful to you, a ⭐ helps other people find it.
 
