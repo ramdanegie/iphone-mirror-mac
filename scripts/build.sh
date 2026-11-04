@@ -24,8 +24,11 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN" "$APP/Contents/MacOS/Cermin"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 cp build/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
-# Ad-hoc signature: macOS will ask for Camera permission again after each rebuild.
-codesign --force --sign - --options runtime --entitlements Resources/Cermin.entitlements "$APP"
+# The UxPlay installer (a script, not UxPlay itself) ships in the app for DMG users.
+install -m 0755 scripts/install-uxplay.sh "$APP/Contents/Resources/install-uxplay.sh"
+# Ad-hoc by default: macOS asks for Camera permission again after each rebuild.
+# CERMIN_SIGN_IDENTITY="Apple Development: …" signs with a certificate so permissions survive updates.
+codesign --force --sign "${CERMIN_SIGN_IDENTITY:--}" --timestamp=none --options runtime --entitlements Resources/Cermin.entitlements "$APP"
 echo "Built $APP"
 
 if [[ " $* " == *" --run "* ]]; then open "$APP"; fi
